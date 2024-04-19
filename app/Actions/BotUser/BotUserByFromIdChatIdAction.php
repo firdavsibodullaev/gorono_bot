@@ -21,12 +21,15 @@ class BotUserByFromIdChatIdAction extends BaseAction
 
         /** @var BotUser|null $bot_user */
 
-        $bot_user = BotUser::query()
-            ->where('from_id', $this->payload->from_id)
-            ->where('chat_id', $this->payload->chat_id)
-            ->first();
 
-        return $bot_user;
+        return cache()->remember(
+            key: "bot-user-{$this->payload->from_id}-{$this->payload->chat_id}",
+            ttl: now()->addDay(),
+            callback: fn() => BotUser::query()
+                ->where('from_id', $this->payload->from_id)
+                ->where('chat_id', $this->payload->chat_id)
+                ->first()
+        );
     }
 
     public static function fromIds(int $from_id, int $chat_id): BotUserByFromIdChatIdAction

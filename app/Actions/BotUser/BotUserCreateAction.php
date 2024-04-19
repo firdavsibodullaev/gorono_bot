@@ -20,8 +20,13 @@ class BotUserCreateAction extends BaseAction
         $this->isInstance(BotUserCreateDTO::class);
 
         /** @var BotUser|null $bot_user */
-
         $bot_user = BotUser::query()->create((array)$this->payload);
+
+        cache()->put(
+            key: "bot-user-{$this->payload->from_id}-{$this->payload->chat_id}",
+            value: $bot_user,
+            ttl: now()->addDay()
+        );
 
         return $bot_user;
     }

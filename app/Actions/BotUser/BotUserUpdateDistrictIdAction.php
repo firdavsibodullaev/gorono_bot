@@ -19,9 +19,13 @@ class BotUserUpdateDistrictIdAction extends BaseAction
     {
         $this->isInstance(BotUserUpdateDistrictIdDTO::class);
 
-        /** @var BotUser|null $bot_user */
-
         $this->payload->user->update((array)$this->payload);
+
+        cache()->put(
+            key: "bot-user-{$this->payload->user->from_id}-{$this->payload->user->chat_id}",
+            value: $this->payload->user,
+            ttl: now()->addDay()
+        );
 
         return $this->payload->user;
     }
