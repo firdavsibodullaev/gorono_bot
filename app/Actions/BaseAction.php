@@ -24,7 +24,7 @@ abstract class BaseAction
     protected function isInstance(string $class): void
     {
         if ($this->payload && !$this->payload instanceof $class) {
-            $action_class = get_class($this);
+            $action_class = get_class($this->payload);
 
             throw new WrongInstanceException("Instance of $action_class is not instance of $class");
         }

@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name_uz');
             $table->string('name_ru')->nullable();
+            $table->foreignId('district_id')->constrained('districts');
             $table->timestamps();
         });
     }

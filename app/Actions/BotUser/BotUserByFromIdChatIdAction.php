@@ -28,4 +28,9 @@ class BotUserByFromIdChatIdAction extends BaseAction
 
         return $bot_user;
     }
+
+    public static function fromIds(int $from_id, int $chat_id): BotUserByFromIdChatIdAction
+    {
+        return new static(new BotUserByFromIdChatIdDTO($from_id, $chat_id));
+    }
 }

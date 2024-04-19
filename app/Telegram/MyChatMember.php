@@ -5,7 +5,6 @@ namespace App\Telegram;
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\BotUser\BotUserCreateAction;
 use App\Actions\BotUser\BotUserUpdateStatusAction;
-use App\DTOs\BotUser\BotUserByFromIdChatIdDTO;
 use App\DTOs\BotUser\BotUserCreateDTO;
 use App\DTOs\BotUser\BotUserUpdateStatusDTO;
 use App\Exceptions\WrongInstanceException;
@@ -51,10 +50,7 @@ class MyChatMember extends BaseUpdate
      */
     public function user(): BotUser
     {
-        $user = BotUserByFromIdChatIdAction::make(
-            payload: new BotUserByFromIdChatIdDTO($this->from_id, $this->chat_id)
-        )
-            ->run();
+        $user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
 
         if (!$user) {
             $user = BotUserCreateAction::make(

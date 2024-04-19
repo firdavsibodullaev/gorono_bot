@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Modules\Telegram\Api;
+use App\Modules\Telegram\Request;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton('telegram.request', fn($app) => new Request(new Api));
     }
 
     /**
