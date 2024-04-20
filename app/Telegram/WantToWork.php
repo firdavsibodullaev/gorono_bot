@@ -28,7 +28,7 @@ class WantToWork extends BaseAction
         $this->survey = SurveyFindOrCreateAction::make(new SurveyFindOrCreateDTO($this->user->id))->run();
     }
 
-    public function sendJobTypesList(): void
+    public function sendJobTypesList(bool $is_back = false): void
     {
         $this->message->sendMessage(
             text: __('Qaysi sohada ishlamoqchisiz?'),
@@ -38,10 +38,12 @@ class WantToWork extends BaseAction
             ])
         );
 
-        $this->survey->update([
-            'after_school_goal' => $this->text,
-            'type' => MainMessage::WantToWork
-        ]);
+        if (!$is_back) {
+            $this->survey->update([
+                'after_school_goal' => $this->text,
+                'type' => MainMessage::WantToWork
+            ]);
+        }
 
         $this->action->set(static::class, Method::GetJobFinishSurvey);
     }
@@ -65,7 +67,7 @@ class WantToWork extends BaseAction
         }
 
         if ($method->is(JobType::Other)) {
-            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::remove());
+            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::back());
             $this->action->set(static::class, Method::GetJobOtherFinishSurvey);
             return;
         }
@@ -82,6 +84,8 @@ class WantToWork extends BaseAction
 
     public function getJobOtherFinish(): void
     {
+        BackAction::back($this->text, $this->user, fn() => $this->sendJobTypesList(true));
+
         if (str($this->text)->length() > 100) {
             $this->message->sendMessage(__('Kiriting'));
             return;

@@ -29,17 +29,19 @@ class EnterToUniversity extends BaseAction
         $this->survey = SurveyFindOrCreateAction::make(new SurveyFindOrCreateDTO($this->user->id))->run();
     }
 
-    public function sendUniversityPreparationMethodRequest(): void
+    public function sendUniversityPreparationMethodRequest(bool $is_back = false): void
     {
         $this->message->sendMessage(
             text: __('Oliy o‘quv yurtlariga topshirish uchun qanday tayyorgarlik ko‘ryapsiz?'),
             reply_markup: Keyboard::universityPreparationMethodsList()
         );
 
-        $this->survey->update([
-            'after_school_goal' => $this->text,
-            'type' => MainMessage::EnterToUniversity
-        ]);
+        if (!$is_back) {
+            $this->survey->update([
+                'after_school_goal' => $this->text,
+                'type' => MainMessage::EnterToUniversity
+            ]);
+        }
 
         $this->action->set(static::class, Method::GetUniversityPreparationMethodSendUniversitiesListRequest);
     }
@@ -78,7 +80,7 @@ class EnterToUniversity extends BaseAction
     public function getUniversityPreparationMethodOtherSendUniversitiesListRequest(bool $is_back = false): void
     {
         if (!$is_back) {
-            BackAction::back($this->text, $this->user, fn() => $this->sendUniversityPreparationMethodRequest());
+            BackAction::back($this->text, $this->user, fn() => $this->sendUniversityPreparationMethodRequest(true));
 
             if (str($this->text)->length() > 100) {
                 $this->message->sendMessage(__('Kiriting'));
@@ -99,7 +101,7 @@ class EnterToUniversity extends BaseAction
 
     public function getUniversityFinishSurveyRequest(): void
     {
-        BackAction::back($this->text, $this->user, fn() => $this->sendUniversityPreparationMethodRequest());
+        BackAction::back($this->text, $this->user, fn() => $this->sendUniversityPreparationMethodRequest(true));
 
         $method = UniversityTypeMethod::fromText($this->text, $this->user->language);
 
