@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('surveys', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bot_user_id')->constrained('bot_users');
+            $table->text('type')->nullable();
             $table->text('after_school_goal')->nullable();
             $table->text('university_preparation_method')->nullable();
             $table->text('university_type')->nullable();

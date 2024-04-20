@@ -5,6 +5,7 @@ namespace App\Telegram;
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\Survey\SurveyFindOrCreateAction;
 use App\DTOs\Survey\SurveyFindOrCreateDTO;
+use App\Enums\MainMessage;
 use App\Enums\Method;
 use App\Enums\UniversityPreparationMethod;
 use App\Enums\UniversityTypeMethod;
@@ -38,7 +39,10 @@ class EnterToUniversity extends BaseAction
             ])
         );
 
-        $this->survey->update(['after_school_goal' => $this->text]);
+        $this->survey->update([
+            'after_school_goal' => $this->text,
+            'type' => MainMessage::EnterToUniversity
+        ]);
 
         $this->action->set(static::class, Method::GetUniversityPreparationMethodSendUniversitiesListRequest);
     }
