@@ -34,7 +34,7 @@ class RunBot extends Command
     {
         $this->components->info("Bot started...");
 
-        $updates = Request::getUpdates();
+        $updates = retry(3, fn() => Request::getUpdates());
 
         $update_id = $updates->result->last()?->update_id;
 
@@ -43,7 +43,7 @@ class RunBot extends Command
             Request::getUpdates(offset: $update_id)
                 ->result
                 ->each(function (UpdateDTO $update) use (&$update_id) {
-                    $this->components->info("Request...");
+                    $this->components->info(now()->toDateTimeString() . " Request...");
                     $bot = new BotInit($update);
                     $bot->index();
 

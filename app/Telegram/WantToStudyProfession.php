@@ -28,20 +28,19 @@ class WantToStudyProfession extends BaseAction
         $this->survey = SurveyFindOrCreateAction::make(new SurveyFindOrCreateDTO($this->user->id))->run();
     }
 
-    public function sendProfessionTypesList(): void
+    public function sendProfessionTypesList(bool $is_back = false): void
     {
         $this->message->sendMessage(
             text: __('Qaysi yo\'nalishda kasb-hunar egallashni istaysiz?'),
-            reply_markup: json_encode([
-                'keyboard' => Keyboard::professionTypesList(),
-                'resize_keyboard' => true,
-            ])
+            reply_markup: Keyboard::professionTypesList()
         );
 
-        $this->survey->update([
-            'after_school_goal' => $this->text,
-            'type' => MainMessage::WantToWork
-        ]);
+        if (!$is_back) {
+            $this->survey->update([
+                'after_school_goal' => $this->text,
+                'type' => MainMessage::WantToWork
+            ]);
+        }
 
         $this->action->set(static::class, Method::GetProfessionFinishSurvey);
     }
@@ -55,17 +54,14 @@ class WantToStudyProfession extends BaseAction
         if (!$method) {
             $this->message->sendMessage(
                 text: __('Qaysi yo\'nalishda kasb-hunar egallashni istaysiz?'),
-                reply_markup: json_encode([
-                    'keyboard' => Keyboard::professionTypesList(),
-                    'resize_keyboard' => true,
-                ])
+                reply_markup: Keyboard::professionTypesList()
             );
 
             return;
         }
 
         if ($method->is(ProfessionType::Other)) {
-            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::remove());
+            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::back());
             $this->action->set(static::class, Method::GetProfessionOtherFinishSurvey);
             return;
         }
@@ -82,8 +78,10 @@ class WantToStudyProfession extends BaseAction
 
     public function getProfessionOtherFinish(): void
     {
+        BackAction::back($this->text, $this->user, fn() => $this->sendProfessionTypesList(true));
+
         if (str($this->text)->length() > 100) {
-            $this->message->sendMessage(__('Kiriting'));
+            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::back());
             return;
         }
 

@@ -169,31 +169,34 @@ class Keyboard
         ];
     }
 
-    public static function professionTypesList(): array
+    public static function professionTypesList(): string
     {
-        return [
-            [
-                ['text' => ProfessionType::Sewing->text()],
-                ['text' => ProfessionType::Cooking->text()],
+        return json_encode([
+            'keyboard' => [
+                [
+                    ['text' => ProfessionType::Sewing->text()],
+                    ['text' => ProfessionType::Cooking->text()],
+                ],
+                [
+                    ['text' => ProfessionType::Chef->text()],
+                    ['text' => ProfessionType::Barber->text()],
+                ],
+                [
+                    ['text' => ProfessionType::Electricity->text()],
+                    ['text' => ProfessionType::Accountant->text()],
+                ],
+                [
+                    ['text' => ProfessionType::ItCourses->text()],
+                    ['text' => ProfessionType::LanguageCourses->text()],
+                ],
+                [
+                    ['text' => ProfessionType::Other->text()],
+                ],
+                [
+                    ['text' => BackButton::Back->text()],
+                ],
             ],
-            [
-                ['text' => ProfessionType::Chef->text()],
-                ['text' => ProfessionType::Barber->text()],
-            ],
-            [
-                ['text' => ProfessionType::Electricity->text()],
-                ['text' => ProfessionType::Accountant->text()],
-            ],
-            [
-                ['text' => ProfessionType::ItCourses->text()],
-                ['text' => ProfessionType::LanguageCourses->text()],
-            ],
-            [
-                ['text' => ProfessionType::Other->text()],
-            ],
-            [
-                ['text' => ProfessionType::Back->text()],
-            ],
-        ];
+            'resize_keyboard' => true,
+        ]);
     }
 }
