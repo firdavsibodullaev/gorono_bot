@@ -33,7 +33,7 @@ class EnterToUniversity extends BaseAction
     {
         $this->message->sendMessage(
             text: __('Oliy o‘quv yurtlariga topshirish uchun qanday tayyorgarlik ko‘ryapsiz?'),
-            reply_markup:  Keyboard::universityPreparationMethodsList()
+            reply_markup: Keyboard::universityPreparationMethodsList()
         );
 
         $this->survey->update([
@@ -67,10 +67,7 @@ class EnterToUniversity extends BaseAction
 
         $this->message->sendMessage(
             text: __('Qaysi turdagi oliy ta\'lim muassasasalariga topchirmoqchisiz?'),
-            reply_markup: json_encode([
-                'keyboard' => Keyboard::universityTypesList(),
-                'resize_keyboard' => true
-            ])
+            reply_markup: Keyboard::universityTypesList()
         );
 
         $this->survey->update(['university_preparation_method' => $this->text]);
@@ -78,24 +75,24 @@ class EnterToUniversity extends BaseAction
         $this->action->set(static::class, Method::GetUniversityFinishSurveyRequest);
     }
 
-    public function getUniversityPreparationMethodOtherSendUniversitiesListRequest(): void
+    public function getUniversityPreparationMethodOtherSendUniversitiesListRequest(bool $is_back = false): void
     {
-        BackAction::back($this->text, $this->user, fn() => $this->sendUniversityPreparationMethodRequest());
+        if (!$is_back) {
+            BackAction::back($this->text, $this->user, fn() => $this->sendUniversityPreparationMethodRequest());
 
-        if (str($this->text)->length() > 100) {
-            $this->message->sendMessage(__('Kiriting'));
-            return;
+            if (str($this->text)->length() > 100) {
+                $this->message->sendMessage(__('Kiriting'));
+                return;
+            }
+
+            $this->survey->update(['university_preparation_method' => $this->text]);
         }
 
         $this->message->sendMessage(
             text: __('Qaysi turdagi oliy ta\'lim muassasasalariga topchirmoqchisiz?'),
-            reply_markup: json_encode([
-                'keyboard' => Keyboard::universityTypesList(),
-                'resize_keyboard' => true
-            ])
+            reply_markup: Keyboard::universityTypesList()
         );
 
-        $this->survey->update(['university_preparation_method' => $this->text]);
 
         $this->action->set(static::class, Method::GetUniversityFinishSurveyRequest);
     }
@@ -109,12 +106,15 @@ class EnterToUniversity extends BaseAction
         if (!$method) {
             $this->message->sendMessage(
                 text: __('Qaysi turdagi oliy ta\'lim muassasasalariga topchirmoqchisiz?'),
-                reply_markup: json_encode([
-                    'keyboard' => Keyboard::universityTypesList(),
-                    'resize_keyboard' => true
-                ])
+                reply_markup: Keyboard::universityTypesList()
             );
 
+            return;
+        }
+
+        if ($method->is(UniversityTypeMethod::Other)) {
+            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::back());
+            $this->action->set(static::class, Method::GetUniversityOtherFinishSurveyRequest);
             return;
         }
 
@@ -125,15 +125,12 @@ class EnterToUniversity extends BaseAction
         $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'),
             reply_markup: Keyboard::remove());
 
-        if ($method->is(UniversityTypeMethod::Other)) {
-            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::remove());
-            $this->action->set(static::class, Method::GetUniversityOtherFinishSurveyRequest);
-            return;
-        }
     }
 
     public function getUniversityOtherFinishSurveyRequest(): void
     {
+        BackAction::back($this->text, $this->user, fn() => $this->getUniversityPreparationMethodOtherSendUniversitiesListRequest(true));
+
         if (str($this->text)->length() > 100) {
             $this->message->sendMessage(__('Kiriting'));
             return;

@@ -132,21 +132,24 @@ class Keyboard
         ]);
     }
 
-    public static function universityTypesList(): array
+    public static function universityTypesList(): string
     {
-        return [
-            [
-                ['text' => UniversityTypeMethod::StateUniversity->text()],
-                ['text' => UniversityTypeMethod::PrivateUniversity->text()],
+        return json_encode([
+            'keyboard' => [
+                [
+                    ['text' => UniversityTypeMethod::StateUniversity->text()],
+                    ['text' => UniversityTypeMethod::PrivateUniversity->text()],
+                ],
+                [
+                    ['text' => UniversityTypeMethod::ForeignUniversity->text()],
+                    ['text' => UniversityTypeMethod::Other->text()],
+                ],
+                [
+                    ['text' => BackButton::Back->text()],
+                ],
             ],
-            [
-                ['text' => UniversityTypeMethod::ForeignUniversity->text()],
-                ['text' => UniversityTypeMethod::Other->text()],
-            ],
-            [
-                ['text' => BackButton::Back->text()],
-            ],
-        ];
+            'resize_keyboard' => true
+        ]);
     }
 
     public static function jobTypesList(): array
