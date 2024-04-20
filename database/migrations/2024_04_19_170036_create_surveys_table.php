@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('surveys', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bot_user_id')->constrained('bot_users');
-            $table->unsignedBigInteger('chat_id');
             $table->text('after_school_goal')->nullable();
             $table->text('university_preparation_method')->nullable();
             $table->text('university_type')->nullable();
@@ -28,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('survers');
+        Schema::dropIfExists('surveys');
     }
 };

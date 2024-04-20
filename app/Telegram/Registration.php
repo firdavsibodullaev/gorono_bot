@@ -20,41 +20,18 @@ use App\DTOs\BotUser\BotUserUpdateSchoolIdDTO;
 use App\DTOs\District\DistrictFromNameDTO;
 use App\DTOs\School\SchoolFromNameDTO;
 use App\Enums\Method;
-use App\Facades\Request;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
-use App\Telegram\Action\Action;
+use App\Modules\Telegram\Facades\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 
-class Registration
+class Registration extends BaseAction
 {
-    protected int $from_id;
-    protected int $chat_id;
-    protected Action $action;
-    protected ?string $text;
-
     public function __construct(protected MessageDTO $message)
     {
-        $this->from_id = $this->message->from->id;
-        $this->chat_id = $this->message->chat->id;
-        $this->text = $this->message->text;
+        $this->method = Method::SendLanguage;
 
-        $this->action = Action::make($this->from_id, $this->chat_id);
-
-        if ($this->action->get()?->class !== static::class) {
-            $this->action->set(Registration::class, Method::SendLanguage);
-        }
-    }
-
-    public function __invoke()
-    {
-        $action = $this->action->get();
-        if (!$action || !method_exists($this, $action->method)) {
-            (new SendMainMessage($this->from_id, $this->chat_id))();
-            return;
-        }
-
-        $this->{$action->method}();
+        parent::__construct($this->message);
     }
 
     public function sendLanguage(): void
@@ -201,6 +178,6 @@ class Registration
 
         $this->action->clear();
 
-        (new SendMainMessage($this->from_id, $this->chat_id))();
+        SendMainMessage::send($this->from_id, $this->chat_id);
     }
 }

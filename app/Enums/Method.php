@@ -11,4 +11,9 @@ enum Method: string
     case GetPhoneSendDistrictRequest = 'getPhoneSendDistrictRequest';
     case GetDistrictSendSchoolRequest = 'getDistrictSendSchoolRequest';
     case GetSchoolFinishRegistration = 'getSchoolFinishRegistration';
+    case SendUniversityPreparationMethodRequest = 'sendUniversityPreparationMethodRequest';
+    case GetUniversityPreparationMethodSendUniversitiesListRequest = 'getUniversityPreparationMethodSendUniversitiesListRequest';
+    case GetUniversityPreparationMethodOtherSendUniversitiesList = 'getUniversityPreparationMethodOtherSendUniversitiesListRequest';
+    case GetUniversityFinishSurveyRequest = 'getUniversityFinishSurveyRequest';
+    case GetUniversityOtherFinishSurveyRequest = 'getUniversityOtherFinishSurveyRequest';
 }

@@ -2,6 +2,8 @@
 
 namespace App\Modules\Telegram\DTOs\Response;
 
+use App\Modules\Telegram\Facades\Request;
+
 class MessageDTO
 {
     public function __construct(
@@ -40,5 +42,10 @@ class MessageDTO
         return $possible_command->startsWith('/') && $possible_command
                 ->replaceMatches('/^\//', '')
                 ->isMatch('/^[a-z]+$/');
+    }
+
+    public function sendMessage(string $text, string $parse_mode = 'html', ?string $reply_markup = null, array $reply_parameters = []): SendMessageDTO
+    {
+        return Request::sendMessage($this->chat->id, $text, $parse_mode, $reply_markup, $reply_parameters);
     }
 }

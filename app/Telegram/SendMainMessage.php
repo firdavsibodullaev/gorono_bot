@@ -3,11 +3,9 @@
 namespace App\Telegram;
 
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
-use App\Enums\Method;
 use App\Exceptions\WrongInstanceException;
-use App\Facades\Request;
 use App\Models\BotUser;
-use App\Telegram\Action\Action;
+use App\Modules\Telegram\Facades\Request;
 
 class SendMainMessage
 {
@@ -21,6 +19,11 @@ class SendMainMessage
             $this->user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
         } catch (WrongInstanceException) {
         }
+    }
+
+    public static function send(int $from_id, int $chat_id)
+    {
+        return (new static($from_id, $chat_id))();
     }
 
     public function __invoke(): void
@@ -38,8 +41,13 @@ class SendMainMessage
             return;
         }
 
-        Request::sendMessage($this->chat_id, 'test', reply_markup: json_encode([
-            'remove_keyboard' => true
-        ]));
+        Request::sendMessage(
+            $this->chat_id,
+            __('Maktabni bitirganingizdan so\'ng nima qilmoqchisiz?'),
+            reply_markup: json_encode([
+                'keyboard' => Keyboard::afterSchoolGoal(),
+                'resize_keyboard' => true,
+            ])
+        );
     }
 }

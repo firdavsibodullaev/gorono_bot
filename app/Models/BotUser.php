@@ -53,12 +53,12 @@ class BotUser extends Model
 
     public function surveys(): HasMany
     {
-        return $this->hasMany(Survey::class)->where('chat_id', $this->chat_id);
+        return $this->hasMany(Survey::class);
     }
 
     public function hasSurvey(): Attribute
     {
-        $this->loadMissing('surveys');
+        $this->load(['surveys' => fn(HasMany $hasMany) => $hasMany->where('is_finished', true)]);
 
         return Attribute::get(fn() => $this->surveys->isNotEmpty());
     }

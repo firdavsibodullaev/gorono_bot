@@ -20,6 +20,6 @@ class Start
     public function __invoke(): void
     {
         (new Action($this->from_id, $this->chat_id))->clear();
-        (new SendMainMessage($this->from_id, $this->chat_id))();
+        SendMainMessage::send($this->from_id, $this->chat_id);
     }
 }

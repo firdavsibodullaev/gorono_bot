@@ -34,18 +34,23 @@ class Action
 
             return new ActionDTO(
                 class: $position['class'],
-                method: $position['method']
+                method: $position['method'] ?? null
             );
         } catch (NotFoundExceptionInterface|ContainerExceptionInterface) {
             return null;
         }
     }
 
-    public function set(string $class, Method $method): bool
+    public function set(string $class, ?Method $method = null): ActionDTO
     {
-        $method = $method->value;
+        $method = $method?->value;
 
-        return cache()->put($this->key, compact('class', 'method'), $this->ttl());
+        cache()->put($this->key, compact('class', 'method'), $this->ttl());
+
+        return new ActionDTO(
+            class: $class,
+            method: $method
+        );
     }
 
     public function clear(): bool
