@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Language;
 use App\Modules\Telegram\Enums\ChatMemberStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -20,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $district_id
  * @property int $school_id
  * @property ChatMemberStatus $status
- * @property string $language
+ * @property Language $language
  * @property bool $is_registered
  * @property-read bool $has_survey
  * @property-read Collection $surveys
@@ -42,12 +43,13 @@ class BotUser extends Model
         'is_registered',
     ];
 
-    protected function casts()
+    protected function casts(): array
     {
         return [
             'status' => ChatMemberStatus::class,
             'is_registered' => 'boolean',
-            'birthdate' => 'date'
+            'birthdate' => 'date',
+            'language' => Language::class
         ];
     }
 

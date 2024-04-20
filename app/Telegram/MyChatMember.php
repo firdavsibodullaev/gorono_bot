@@ -4,9 +4,8 @@ namespace App\Telegram;
 
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\BotUser\BotUserCreateAction;
-use App\Actions\BotUser\BotUserUpdateStatusAction;
 use App\DTOs\BotUser\BotUserCreateDTO;
-use App\DTOs\BotUser\BotUserUpdateStatusDTO;
+use App\Enums\Language;
 use App\Exceptions\WrongInstanceException;
 use App\Models\BotUser;
 use App\Modules\Telegram\DTOs\Response\MyChatMemberDTO;
@@ -37,8 +36,7 @@ class MyChatMember extends BaseUpdate
             if ($user->status->is($this->status)) {
                 return;
             }
-
-            BotUserUpdateStatusAction::make(new BotUserUpdateStatusDTO($user, $this->status))->run();
+            $user->update(['status' => $this->status]);
         } catch (WrongInstanceException) {
         }
 
@@ -57,7 +55,8 @@ class MyChatMember extends BaseUpdate
                 payload: new BotUserCreateDTO(
                     from_id: $this->from_id,
                     chat_id: $this->chat_id,
-                    status: $this->status
+                    status: $this->status,
+                    language: Language::tryFrom($this->update->my_chat_member->from->language_code) ?? Language::Uz
                 )
             )
                 ->run();

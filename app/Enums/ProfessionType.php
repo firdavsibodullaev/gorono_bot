@@ -13,6 +13,7 @@ enum ProfessionType: string
     case ItCourses = 'it_courses';
     case LanguageCourses = 'language_courses';
     case Other = 'other';
+    case Back = 'back';
 
     public function text(): string
     {
@@ -26,6 +27,7 @@ enum ProfessionType: string
             self::ItCourses => __('IT kurslari'),
             self::LanguageCourses => __('Til kurslari'),
             self::Other => __('Boshqa'),
+            self::Back => __('Ortga'),
         };
     }
 
@@ -65,6 +67,10 @@ enum ProfessionType: string
 
         if (__('Boshqa', locale: $lang) === $text) {
             return self::Other;
+        }
+
+        if (__('Ortga', locale: $lang) === $text) {
+            return self::Back;
         }
 
         return null;

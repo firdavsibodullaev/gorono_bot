@@ -2,6 +2,7 @@
 
 namespace App\Telegram;
 
+use App\Exceptions\StopExecutionException;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
 
 class BotInit
@@ -12,10 +13,13 @@ class BotInit
 
     public function index(): void
     {
-        if ($this->update->message) {
-            Message::make($this->update)->index();
-        } elseif ($this->update->my_chat_member) {
-            MyChatMember::make($this->update)->index();
+        try {
+            if ($this->update->message) {
+                Message::make($this->update)->index();
+            } elseif ($this->update->my_chat_member) {
+                MyChatMember::make($this->update)->index();
+            }
+        } catch (StopExecutionException) {
         }
     }
 }

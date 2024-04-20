@@ -63,8 +63,14 @@ class EnterToUniversity extends BaseAction
             return;
         }
 
+        if ($method->is(UniversityPreparationMethod::Back)) {
+            $this->action->clear();
+            SendMainMessage::send($this->from_id, $this->chat_id);
+            return;
+        }
+
         if ($method->is(UniversityPreparationMethod::Other)) {
-            $this->message->sendMessage(__('Kiriting'), reply_markup: json_encode(['remove_keyboard' => true]));
+            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::remove());
             $this->action->set(static::class, Method::GetUniversityPreparationMethodOtherSendUniversitiesList);
             return;
         }
@@ -124,10 +130,10 @@ class EnterToUniversity extends BaseAction
         $this->action->clear();
 
         $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'),
-            reply_markup: json_encode(['remove_keyboard' => true]));
+            reply_markup: Keyboard::remove());
 
         if ($method->is(UniversityTypeMethod::Other)) {
-            $this->message->sendMessage(__('Kiriting'), reply_markup: json_encode(['remove_keyboard' => true]));
+            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::remove());
             $this->action->set(static::class, Method::GetUniversityOtherFinishSurveyRequest);
             return;
         }

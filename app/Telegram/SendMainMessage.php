@@ -11,8 +11,6 @@ class SendMainMessage
 {
     protected BotUser $user;
 
-    protected Request $api;
-
     public function __construct(protected int $from_id, protected int $chat_id)
     {
         try {
@@ -34,9 +32,7 @@ class SendMainMessage
             Request::sendMessage(
                 $this->chat_id,
                 'Siz so\'rovnomadan o\'tib bo\'lgansiz',
-                reply_markup: json_encode([
-                    'remove_keyboard' => true
-                ])
+                reply_markup: Keyboard::remove()
             );
             return;
         }

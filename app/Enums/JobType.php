@@ -8,6 +8,7 @@ enum JobType: string
     case Manufacture = 'manufacture';
     case Business = 'business';
     case Other = 'other';
+    case Back = 'back';
 
     public function text(): string
     {
@@ -16,6 +17,7 @@ enum JobType: string
             self::Manufacture => __('Ishlab chiqarish'),
             self::Business => __('Xususiy tadbirkorlik'),
             self::Other => __('Boshqa'),
+            self::Back => __('Ortga'),
         };
     }
 
@@ -24,6 +26,7 @@ enum JobType: string
         if (__('Aholiga xizmat ko\'rsatish', locale: $lang) === $text) {
             return self::Service;
         }
+
         if (__('Ishlab chiqarish', locale: $lang) === $text) {
             return self::Manufacture;
         }
@@ -31,8 +34,13 @@ enum JobType: string
         if (__('Xususiy tadbirkorlik', locale: $lang) === $text) {
             return self::Business;
         }
+
         if (__('Boshqa', locale: $lang) === $text) {
             return self::Other;
+        }
+
+        if (__('Ortga', locale: $lang) === $text) {
+            return self::Back;
         }
 
         return null;

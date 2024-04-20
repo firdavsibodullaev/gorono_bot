@@ -8,6 +8,7 @@ enum UniversityTypeMethod: string
     case PrivateUniversity = 'private_university';
     case ForeignUniversity = 'foreign_university';
     case Other = 'other';
+    case Back = 'back';
 
     public function text(): string
     {
@@ -16,6 +17,7 @@ enum UniversityTypeMethod: string
             self::PrivateUniversity => __('Xususiy oliy ta\'lim muassasasiga'),
             self::ForeignUniversity => __('Xorijda joylashgan oliy ta\'lim muassasasiga'),
             self::Other => __('Boshqa'),
+            self::Back => __('Ortga'),
         };
     }
 
@@ -24,6 +26,7 @@ enum UniversityTypeMethod: string
         if (__('Davlat oliy ta\'lim muassasasiga', locale: $lang) === $text) {
             return self::StateUniversity;
         }
+
         if (__('Xususiy oliy ta\'lim muassasasiga', locale: $lang) === $text) {
             return self::PrivateUniversity;
         }
@@ -31,8 +34,13 @@ enum UniversityTypeMethod: string
         if (__('Xorijda joylashgan oliy ta\'lim muassasasiga', locale: $lang) === $text) {
             return self::ForeignUniversity;
         }
+
         if (__('Boshqa', locale: $lang) === $text) {
             return self::Other;
+        }
+
+        if (__('Ortga', locale: $lang) === $text) {
+            return self::Back;
         }
 
         return null;

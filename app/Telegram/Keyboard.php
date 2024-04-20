@@ -5,7 +5,9 @@ namespace App\Telegram;
 use App\Actions\District\DistrictsListAction;
 use App\Actions\School\SchoolListAction;
 use App\DTOs\School\SchoolListDTO;
+use App\Enums\BackButton;
 use App\Enums\JobType;
+use App\Enums\Language;
 use App\Enums\MainMessage;
 use App\Enums\ProfessionType;
 use App\Enums\UniversityPreparationMethod;
@@ -16,6 +18,23 @@ use Illuminate\Database\Eloquent\Collection;
 
 class Keyboard
 {
+    public static function back(): false|string
+    {
+        return json_encode([
+            'keyboard' => [
+                [
+                    ['text' => BackButton::Back->text()]
+                ]
+            ],
+            'resize_keyboard' => true,
+        ]);
+    }
+
+    public static function remove(): string
+    {
+        return json_encode(['remove_keyboard' => true]);
+    }
+
     public static function languages(): array
     {
         return [
@@ -35,24 +54,32 @@ class Keyboard
         return [
             [
                 ['text' => __('Telefon raqami bilan ulashish'), 'request_contact' => true]
-            ]
+            ],
+            [
+                ['text' => BackButton::Back->text()]
+            ],
         ];
     }
 
-    public static function districts(string $language): array
+    public static function districts(Language $language): string
     {
-        return DistrictsListAction::make()
-            ->run()
-            ->chunk(2)
-            ->map(
-                callback: fn(Collection $districts) => $districts->map(
-                    callback: fn(District $district) => ['text' => $district->name($language)]
-                )->values()
-            )->values()
-            ->toArray();
+        return json_encode([
+            'keyboard' => DistrictsListAction::make()
+                ->run()
+                ->chunk(2)
+                ->map(
+                    callback: fn(Collection $districts) => $districts->map(
+                        callback: fn(District $district) => ['text' => $district->name($language)]
+                    )->values()
+                )
+                ->push([['text' => BackButton::Back->text()]])
+                ->values()
+                ->toArray(),
+            'resize_keyboard' => true
+        ]);
     }
 
-    public static function schools(int $district_id, string $language)
+    public static function schools(int $district_id, Language $language)
     {
         return SchoolListAction::make(new SchoolListDTO($district_id))
             ->run()
@@ -61,7 +88,9 @@ class Keyboard
                 callback: fn(Collection $schools) => $schools->map(
                     callback: fn(School $school) => ['text' => $school->name($language)]
                 )->values()
-            )->values()
+            )
+            ->push([['text' => BackButton::Back->text()]])
+            ->values()
             ->toArray();
     }
 
@@ -94,6 +123,9 @@ class Keyboard
                 ['text' => UniversityPreparationMethod::GoToRepetition->text()],
                 ['text' => UniversityPreparationMethod::Other->text()],
             ],
+            [
+                ['text' => UniversityPreparationMethod::Back->text()],
+            ],
         ];
     }
 
@@ -107,6 +139,9 @@ class Keyboard
             [
                 ['text' => UniversityTypeMethod::ForeignUniversity->text()],
                 ['text' => UniversityTypeMethod::Other->text()],
+            ],
+            [
+                ['text' => UniversityTypeMethod::Back->text()],
             ],
         ];
     }
@@ -122,10 +157,13 @@ class Keyboard
                 ['text' => JobType::Business->text()],
                 ['text' => JobType::Other->text()],
             ],
+            [
+                ['text' => JobType::Back->text()],
+            ],
         ];
     }
 
-    public static function professionTypesList()
+    public static function professionTypesList(): array
     {
         return [
             [
@@ -146,6 +184,9 @@ class Keyboard
             ],
             [
                 ['text' => ProfessionType::Other->text()],
+            ],
+            [
+                ['text' => ProfessionType::Back->text()],
             ],
         ];
     }

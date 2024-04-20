@@ -2,11 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Modules\Telegram\DTOs\Request\GetUpdatesDTO;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
-use App\Modules\Telegram\Request;
+use App\Modules\Telegram\Facades\Request;
 use App\Telegram\BotInit;
 use Illuminate\Console\Command;
+use Illuminate\Http\Client\ConnectionException;
+use Throwable;
 
 class RunBot extends Command
 {
@@ -24,29 +25,48 @@ class RunBot extends Command
      */
     protected $description = 'Run bot development';
 
+    protected int $requests_count = 1;
+
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
-        /** @var Request $api */
-        $api = app(Request::class);
+        $this->components->info("Bot started...");
 
-        $updates = $api->getUpdates();
+        $updates = Request::getUpdates();
 
         $update_id = $updates->result->last()?->update_id;
 
         loop:
-        $api->getUpdates(new GetUpdatesDTO(offset: $update_id))
-            ->result
-            ->each(function (UpdateDTO $update) use (&$update_id) {
+        try {
+            Request::getUpdates(offset: $update_id)
+                ->result
+                ->each(function (UpdateDTO $update) use (&$update_id) {
+                    $this->components->info("Request...");
+                    $bot = new BotInit($update);
+                    $bot->index();
 
-                $bot = new BotInit($update);
-                $bot->index();
+                    $update_id = $update->update_id + 1;
+                });
 
-                $update_id = $update->update_id + 1;
-            });
+            $this->sleepIfNecessary();
 
+        } catch (ConnectionException) {
+            sleep(1);
+        } catch (Throwable $e) {
+            $this->components->error("Error: " . $e->getMessage());
+            sleep(1);
+        }
         goto loop;
+    }
+
+    private function sleepIfNecessary(): void
+    {
+        $this->requests_count++;
+
+        if ($this->requests_count % 10 == 0) {
+            sleep(1);
+        }
     }
 }

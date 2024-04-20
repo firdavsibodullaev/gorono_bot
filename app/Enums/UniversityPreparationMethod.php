@@ -8,6 +8,7 @@ enum UniversityPreparationMethod: string
     case GoToRepetition = 'go_to_repetition';
     case GoToAdditionalCourses = 'go_to_additional_courses';
     case Other = 'other';
+    case Back = 'back';
 
     public function text(): string
     {
@@ -16,6 +17,7 @@ enum UniversityPreparationMethod: string
             self::GoToAdditionalCourses => __('O‘quv kurslariga boryapman'),
             self::GoToRepetition => __('O‘quv kurslariga borishim kerak'),
             self::Other => __('Boshqa'),
+            self::Back => __('Ortga'),
         };
     }
 
@@ -24,6 +26,7 @@ enum UniversityPreparationMethod: string
         if (__('Maktab bilimlari yetarli', locale: $lang) === $text) {
             return self::SchoolKnowledge;
         }
+
         if (__('O‘quv kurslariga borishim kerak', locale: $lang) === $text) {
             return self::GoToRepetition;
         }
@@ -31,8 +34,13 @@ enum UniversityPreparationMethod: string
         if (__('O‘quv kurslariga boryapman', locale: $lang) === $text) {
             return self::GoToAdditionalCourses;
         }
+
         if (__('Boshqa', locale: $lang) === $text) {
             return self::Other;
+        }
+
+        if (__('Ortga', locale: $lang) === $text) {
+            return self::Back;
         }
 
         return null;

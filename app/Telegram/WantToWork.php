@@ -5,9 +5,9 @@ namespace App\Telegram;
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\Survey\SurveyFindOrCreateAction;
 use App\DTOs\Survey\SurveyFindOrCreateDTO;
+use App\Enums\JobType;
 use App\Enums\MainMessage;
 use App\Enums\Method;
-use App\Enums\JobType;
 use App\Models\BotUser;
 use App\Models\Survey;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
@@ -63,7 +63,7 @@ class WantToWork extends BaseAction
         }
 
         if ($method->is(JobType::Other)) {
-            $this->message->sendMessage(__('Kiriting'), reply_markup: json_encode(['remove_keyboard' => true]));
+            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::remove());
             $this->action->set(static::class, Method::GetJobOtherFinishSurvey);
             return;
         }
@@ -74,7 +74,7 @@ class WantToWork extends BaseAction
 
         $this->message->sendMessage(
             __('So\'rovnomada qatnashganingiz uchun raxmat'),
-            reply_markup: json_encode(['remove_keyboard' => true])
+            reply_markup: Keyboard::remove()
         );
     }
 

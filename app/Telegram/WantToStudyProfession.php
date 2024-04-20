@@ -64,7 +64,7 @@ class WantToStudyProfession extends BaseAction
         }
 
         if ($method->is(ProfessionType::Other)) {
-            $this->message->sendMessage(__('Kiriting'), reply_markup: json_encode(['remove_keyboard' => true]));
+            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::remove());
             $this->action->set(static::class, Method::GetProfessionOtherFinishSurvey);
             return;
         }
@@ -75,7 +75,7 @@ class WantToStudyProfession extends BaseAction
 
         $this->message->sendMessage(
             __('So\'rovnomada qatnashganingiz uchun raxmat'),
-            reply_markup: json_encode(['remove_keyboard' => true])
+            reply_markup: Keyboard::remove()
         );
     }
 

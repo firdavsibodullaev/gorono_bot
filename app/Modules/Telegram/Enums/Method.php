@@ -4,6 +4,7 @@ namespace App\Modules\Telegram\Enums;
 
 enum Method: string
 {
-    case getUpdates = 'getUpdates';
-    case sendMessage = 'sendMessage';
+    case GetUpdates = 'getUpdates';
+    case SendMessage = 'sendMessage';
+    case EditMessageText = 'editMessageText';
 }

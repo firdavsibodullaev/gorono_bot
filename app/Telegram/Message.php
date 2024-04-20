@@ -9,7 +9,6 @@ use App\Enums\MainMessage;
 use App\Exceptions\UpdateNotPermittedException;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
-use App\Modules\Telegram\Enums\ChatMemberStatus;
 use App\Modules\Telegram\Enums\ChatType;
 use App\Telegram\Action\Action;
 
@@ -40,14 +39,17 @@ class Message extends BaseUpdate
 
     }
 
-    public function index()
+    public function index(): void
     {
         $user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
 
         if (!$user) {
-            $user = BotUserCreateAction::make(
-                new BotUserCreateDTO($this->from_id, $this->chat_id, ChatMemberStatus::Member)
-            )->run();
+            $user = BotUserCreateAction::make(BotUserCreateDTO::fromMessage($this->message))->run();
+        }
+
+        if ($this->message->isCommand() && $this->isCommand()) {
+            HandleCommand::make($this->update)->index();
+            return;
         }
 
         if (!$user->is_registered) {
@@ -55,10 +57,6 @@ class Message extends BaseUpdate
             return;
         }
 
-        if ($this->message->isCommand() && $this->isCommand()) {
-            HandleCommand::make($this->update)->index();
-            return;
-        }
 
         $action = Action::make($this->message->from->id, $this->chat_id)->get();
         $main_message = $this->getMainMessage();

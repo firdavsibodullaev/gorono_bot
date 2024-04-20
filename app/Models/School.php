@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Language;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -17,8 +18,8 @@ class School extends Model
 
     protected $fillable = ['name_uz', 'name_ru', 'district_id'];
 
-    public function name(string $language)
+    public function name(Language $language)
     {
-        return $this->{'name_' . $language} ?? $this->name_uz;
+        return $this->{'name_' . $language->value} ?? $this->name_uz;
     }
 }
