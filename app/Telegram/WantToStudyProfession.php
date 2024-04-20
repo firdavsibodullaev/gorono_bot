@@ -8,18 +8,19 @@ use App\DTOs\Survey\SurveyFindOrCreateDTO;
 use App\Enums\MainMessage;
 use App\Enums\Method;
 use App\Enums\JobType;
+use App\Enums\ProfessionType;
 use App\Models\BotUser;
 use App\Models\Survey;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
 
-class WantToWork extends BaseAction
+class WantToStudyProfession extends BaseAction
 {
     protected Survey $survey;
     protected BotUser $user;
 
     public function __construct(MessageDTO $message)
     {
-        $this->method = Method::SendJobTypesList;
+        $this->method = Method::SendProfessionTypesList;
 
         parent::__construct($message);
 
@@ -28,12 +29,12 @@ class WantToWork extends BaseAction
         $this->survey = SurveyFindOrCreateAction::make(new SurveyFindOrCreateDTO($this->user->id))->run();
     }
 
-    public function sendJobTypesList(): void
+    public function sendProfessionTypesList(): void
     {
         $this->message->sendMessage(
-            text: __('Qaysi sohada ishlamoqchisiz?'),
+            text: __('Qaysi yo\'nalishda kasb-hunar egallashni istaysiz?'),
             reply_markup: json_encode([
-                'keyboard' => Keyboard::jobTypesList(),
+                'keyboard' => Keyboard::professionTypesList(),
                 'resize_keyboard' => true,
             ])
         );
@@ -43,18 +44,18 @@ class WantToWork extends BaseAction
             'type' => MainMessage::WantToWork
         ]);
 
-        $this->action->set(static::class, Method::GetJobFinishSurvey);
+        $this->action->set(static::class, Method::GetProfessionFinishSurvey);
     }
 
-    public function getJobFinishSurvey(): void
+    public function getProfessionFinishSurvey()
     {
-        $method = JobType::fromText($this->text, $this->user->language);
+        $method = ProfessionType::fromText($this->text, $this->user->language);
 
         if (!$method) {
             $this->message->sendMessage(
-                text: __('Qaysi sohada ishlamoqchisiz?'),
+                text: __('Qaysi yo\'nalishda kasb-hunar egallashni istaysiz?'),
                 reply_markup: json_encode([
-                    'keyboard' => Keyboard::jobTypesList(),
+                    'keyboard' => Keyboard::professionTypesList(),
                     'resize_keyboard' => true,
                 ])
             );
@@ -62,9 +63,9 @@ class WantToWork extends BaseAction
             return;
         }
 
-        if ($method->is(JobType::Other)) {
+        if ($method->is(ProfessionType::Other)) {
             $this->message->sendMessage(__('Kiriting'), reply_markup: json_encode(['remove_keyboard' => true]));
-            $this->action->set(static::class, Method::GetJobOtherFinishSurvey);
+            $this->action->set(static::class, Method::GetProfessionOtherFinishSurvey);
             return;
         }
 
@@ -78,7 +79,7 @@ class WantToWork extends BaseAction
         );
     }
 
-    public function getJobOtherFinish(): void
+    public function getProfessionOtherFinish(): void
     {
         if (str($this->text)->length() > 100) {
             $this->message->sendMessage(__('Kiriting'));

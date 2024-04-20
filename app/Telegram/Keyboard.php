@@ -5,6 +5,7 @@ namespace App\Telegram;
 use App\Actions\District\DistrictsListAction;
 use App\Actions\School\SchoolListAction;
 use App\DTOs\School\SchoolListDTO;
+use App\Enums\JobType;
 use App\Enums\MainMessage;
 use App\Enums\ProfessionType;
 use App\Enums\UniversityPreparationMethod;
@@ -110,15 +111,40 @@ class Keyboard
         ];
     }
 
-    public static function professionTypesList(): array
+    public static function jobTypesList(): array
     {
         return [
             [
-                ['text' => ProfessionType::Service->text()],
-                ['text' => ProfessionType::Manufacture->text()],
+                ['text' => JobType::Service->text()],
+                ['text' => JobType::Manufacture->text()],
             ],
             [
-                ['text' => ProfessionType::Business->text()],
+                ['text' => JobType::Business->text()],
+                ['text' => JobType::Other->text()],
+            ],
+        ];
+    }
+
+    public static function professionTypesList()
+    {
+        return [
+            [
+                ['text' => ProfessionType::Sewing->text()],
+                ['text' => ProfessionType::Cooking->text()],
+            ],
+            [
+                ['text' => ProfessionType::Chef->text()],
+                ['text' => ProfessionType::Barber->text()],
+            ],
+            [
+                ['text' => ProfessionType::Electricity->text()],
+                ['text' => ProfessionType::Accountant->text()],
+            ],
+            [
+                ['text' => ProfessionType::ItCourses->text()],
+                ['text' => ProfessionType::LanguageCourses->text()],
+            ],
+            [
                 ['text' => ProfessionType::Other->text()],
             ],
         ];

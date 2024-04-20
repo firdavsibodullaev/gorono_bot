@@ -86,6 +86,7 @@ class EnterToUniversity extends BaseAction
     {
         if (str($this->text)->length() > 100) {
             $this->message->sendMessage(__('Kiriting'));
+            return;
         }
 
         $this->message->sendMessage(
@@ -101,7 +102,7 @@ class EnterToUniversity extends BaseAction
         $this->action->set(static::class, Method::GetUniversityFinishSurveyRequest);
     }
 
-    public function getUniversityFinishSurveyRequest()
+    public function getUniversityFinishSurveyRequest(): void
     {
 
         $method = UniversityTypeMethod::fromText($this->text, $this->user->language);
@@ -136,6 +137,7 @@ class EnterToUniversity extends BaseAction
     {
         if (str($this->text)->length() > 100) {
             $this->message->sendMessage(__('Kiriting'));
+            return;
         }
 
         $this->survey->update(['university_type' => $this->text, 'is_finished' => true]);

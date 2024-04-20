@@ -3,6 +3,8 @@
 namespace App\Enums;
 
 use App\Telegram\EnterToUniversity;
+use App\Telegram\OneStepAnswer;
+use App\Telegram\WantToStudyProfession;
 use App\Telegram\WantToWork;
 
 enum MainMessage: string
@@ -63,10 +65,13 @@ enum MainMessage: string
         return match ($this) {
             self::EnterToUniversity => EnterToUniversity::class,
             self::WantToWork => WantToWork::class,
-            self::WantToStudyProfession => __('Kasb-hunar o\'rganmoqchiman'),
-            self::WantWorkAbroad => __('Xorijda ishlamoqchiman'),
-            self::IDontKnowYet => __('Hali bir qarorga kelganim yo\'q'),
-            self::Other => __('Boshqa')
+            self::WantToStudyProfession => WantToStudyProfession::class,
+            self::WantWorkAbroad, self::Other, self::IDontKnowYet => OneStepAnswer::class
         };
+    }
+
+    public function is(self $mainMessage): bool
+    {
+        return $this === $mainMessage;
     }
 }

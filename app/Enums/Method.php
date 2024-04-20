@@ -16,7 +16,12 @@ enum Method: string
     case GetUniversityPreparationMethodOtherSendUniversitiesList = 'getUniversityPreparationMethodOtherSendUniversitiesListRequest';
     case GetUniversityFinishSurveyRequest = 'getUniversityFinishSurveyRequest';
     case GetUniversityOtherFinishSurveyRequest = 'getUniversityOtherFinishSurveyRequest';
+    case SendJobTypesList = 'sendJobTypesList';
+    case GetJobFinishSurvey = 'getJobFinishSurvey';
+    case GetJobOtherFinishSurvey = 'getJobOtherFinish';
     case SendProfessionTypesList = 'sendProfessionTypesList';
     case GetProfessionFinishSurvey = 'getProfessionFinishSurvey';
     case GetProfessionOtherFinishSurvey = 'getProfessionOtherFinish';
+    case GetOneStepAnswerAndFinish = 'getOneStepAnswerAndFinish';
+    case GetOneStepOtherAnswerAndFinish = 'getOneStepOtherAnswerAndFinish';
 }

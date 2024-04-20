@@ -61,13 +61,14 @@ class Message extends BaseUpdate
         }
 
         $action = Action::make($this->message->from->id, $this->chat_id)->get();
+        $main_message = $this->getMainMessage();
 
-        if (!$action?->class && ($main_message = $this->getMainMessage())) {
+        if (!$action?->class && $main_message) {
             $action = Action::make($this->from_id, $this->chat_id)->set($main_message->class());
         }
 
         if ($action) {
-            (new $action->class($this->message))->index();
+            (new $action->class($this->message, $main_message))->index();
             return;
         }
 
