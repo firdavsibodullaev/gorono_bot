@@ -3,6 +3,7 @@
 namespace App\Enums;
 
 use App\Telegram\EnterToUniversity;
+use App\Telegram\WantToWork;
 
 enum MainMessage: string
 {
@@ -61,7 +62,7 @@ enum MainMessage: string
     {
         return match ($this) {
             self::EnterToUniversity => EnterToUniversity::class,
-            self::WantToWork => __('Ishlamoqchiman'),
+            self::WantToWork => WantToWork::class,
             self::WantToStudyProfession => __('Kasb-hunar o\'rganmoqchiman'),
             self::WantWorkAbroad => __('Xorijda ishlamoqchiman'),
             self::IDontKnowYet => __('Hali bir qarorga kelganim yo\'q'),

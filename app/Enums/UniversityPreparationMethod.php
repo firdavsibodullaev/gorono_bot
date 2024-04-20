@@ -13,8 +13,8 @@ enum UniversityPreparationMethod: string
     {
         return match ($this) {
             self::SchoolKnowledge => __('Maktab bilimlari yetarli'),
-            self::GoToRepetition => __('O‘quv kurslariga borishim kerak'),
             self::GoToAdditionalCourses => __('O‘quv kurslariga boryapman'),
+            self::GoToRepetition => __('O‘quv kurslariga borishim kerak'),
             self::Other => __('Boshqa'),
         };
     }

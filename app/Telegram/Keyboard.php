@@ -6,6 +6,9 @@ use App\Actions\District\DistrictsListAction;
 use App\Actions\School\SchoolListAction;
 use App\DTOs\School\SchoolListDTO;
 use App\Enums\MainMessage;
+use App\Enums\ProfessionType;
+use App\Enums\UniversityPreparationMethod;
+use App\Enums\UniversityTypeMethod;
 use App\Models\District;
 use App\Models\School;
 use Illuminate\Database\Eloquent\Collection;
@@ -83,12 +86,12 @@ class Keyboard
     {
         return [
             [
-                ['text' => __('Maktab bilimlari yetarli')],
-                ['text' => __('O‘quv kurslariga boryapman')],
+                ['text' => UniversityPreparationMethod::SchoolKnowledge->text()],
+                ['text' => UniversityPreparationMethod::GoToAdditionalCourses->text()],
             ],
             [
-                ['text' => __('O‘quv kurslariga borishim kerak')],
-                ['text' => __('Boshqa')],
+                ['text' => UniversityPreparationMethod::GoToRepetition->text()],
+                ['text' => UniversityPreparationMethod::Other->text()],
             ],
         ];
     }
@@ -97,12 +100,26 @@ class Keyboard
     {
         return [
             [
-                ['text' => __('Davlat oliy ta\'lim muassasasiga')],
-                ['text' => __('Xususiy oliy ta\'lim muassasasiga')],
+                ['text' => UniversityTypeMethod::StateUniversity->text()],
+                ['text' => UniversityTypeMethod::PrivateUniversity->text()],
             ],
             [
-                ['text' => __('Xorijda joylashgan oliy ta\'lim muassasasiga')],
-                ['text' => __('Boshqa')],
+                ['text' => UniversityTypeMethod::ForeignUniversity->text()],
+                ['text' => UniversityTypeMethod::Other->text()],
+            ],
+        ];
+    }
+
+    public static function professionTypesList(): array
+    {
+        return [
+            [
+                ['text' => ProfessionType::Service->text()],
+                ['text' => ProfessionType::Manufacture->text()],
+            ],
+            [
+                ['text' => ProfessionType::Business->text()],
+                ['text' => ProfessionType::Other->text()],
             ],
         ];
     }
