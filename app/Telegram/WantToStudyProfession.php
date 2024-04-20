@@ -7,7 +7,6 @@ use App\Actions\Survey\SurveyFindOrCreateAction;
 use App\DTOs\Survey\SurveyFindOrCreateDTO;
 use App\Enums\MainMessage;
 use App\Enums\Method;
-use App\Enums\JobType;
 use App\Enums\ProfessionType;
 use App\Models\BotUser;
 use App\Models\Survey;
@@ -47,8 +46,10 @@ class WantToStudyProfession extends BaseAction
         $this->action->set(static::class, Method::GetProfessionFinishSurvey);
     }
 
-    public function getProfessionFinishSurvey()
+    public function getProfessionFinishSurvey(): void
     {
+        BackAction::back($this->text, $this->user, fn() => SendMainMessage::send($this->from_id, $this->chat_id));
+
         $method = ProfessionType::fromText($this->text, $this->user->language);
 
         if (!$method) {

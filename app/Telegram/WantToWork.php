@@ -48,6 +48,8 @@ class WantToWork extends BaseAction
 
     public function getJobFinishSurvey(): void
     {
+        BackAction::back($this->text, $this->user, fn() => SendMainMessage::send($this->from_id, $this->chat_id));
+
         $method = JobType::fromText($this->text, $this->user->language);
 
         if (!$method) {

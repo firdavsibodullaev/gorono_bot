@@ -35,7 +35,7 @@ class OneStepAnswer extends BaseAction
         ]);
 
         if ($this->mainMessage->is(MainMessage::Other)) {
-            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::remove());
+            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::back());
             $this->action->set(static::class, Method::GetOneStepOtherAnswerAndFinish);
             return;
         }
@@ -52,6 +52,8 @@ class OneStepAnswer extends BaseAction
 
     public function getOneStepOtherAnswerAndFinish(): void
     {
+        BackAction::back($this->text, $this->user, fn() => SendMainMessage::send($this->from_id, $this->chat_id));
+
         if (str($this->text)->length() > 100) {
             $this->message->sendMessage(__('Kiriting'));
             return;

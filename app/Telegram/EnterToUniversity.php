@@ -49,6 +49,8 @@ class EnterToUniversity extends BaseAction
 
     public function getUniversityPreparationMethodSendUniversitiesListRequest(): void
     {
+        BackAction::back($this->text, $this->user, fn() => SendMainMessage::send($this->from_id, $this->chat_id));
+
         $method = UniversityPreparationMethod::fromText($this->text, $this->user->language);
 
         if (!$method) {

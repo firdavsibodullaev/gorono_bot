@@ -3,9 +3,9 @@
 namespace App\Telegram;
 
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
-use App\Exceptions\WrongInstanceException;
 use App\Models\BotUser;
 use App\Modules\Telegram\Facades\Request;
+use App\Telegram\Action\Action;
 
 class SendMainMessage
 {
@@ -13,10 +13,9 @@ class SendMainMessage
 
     public function __construct(protected int $from_id, protected int $chat_id)
     {
-        try {
-            $this->user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
-        } catch (WrongInstanceException) {
-        }
+        Action::make($this->from_id, $this->chat_id)->clear();
+
+        $this->user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
     }
 
     public static function send(int $from_id, int $chat_id)

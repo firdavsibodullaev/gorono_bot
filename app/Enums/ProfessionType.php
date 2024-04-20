@@ -31,8 +31,9 @@ enum ProfessionType: string
         };
     }
 
-    public static function fromText(?string $text, string $lang): ?ProfessionType
+    public static function fromText(?string $text, Language $lang): ?ProfessionType
     {
+        $lang = $lang->value;
         if (__('Tikuvchilik', locale: $lang) === $text) {
             return self::Sewing;
         }

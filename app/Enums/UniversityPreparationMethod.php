@@ -21,8 +21,9 @@ enum UniversityPreparationMethod: string
         };
     }
 
-    public static function fromText(?string $text, string $lang): ?UniversityPreparationMethod
+    public static function fromText(?string $text, Language $lang): ?UniversityPreparationMethod
     {
+        $lang = $lang->value;
         if (__('Maktab bilimlari yetarli', locale: $lang) === $text) {
             return self::SchoolKnowledge;
         }

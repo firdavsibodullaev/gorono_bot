@@ -16,8 +16,9 @@ enum MainMessage: string
     case IDontKnowYet = 'i_dont_know_yet';
     case Other = 'other';
 
-    public static function fromText(?string $text, string $language): MainMessage|false
+    public static function fromText(?string $text, Language $language): MainMessage|false
     {
+        $language = $language->value;
         if ($text === null) {
             return false;
         }

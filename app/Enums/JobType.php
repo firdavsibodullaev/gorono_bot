@@ -21,8 +21,10 @@ enum JobType: string
         };
     }
 
-    public static function fromText(?string $text, string $lang): ?JobType
+    public static function fromText(?string $text, Language $lang): ?JobType
     {
+        $lang = $lang->value;
+
         if (__('Aholiga xizmat ko\'rsatish', locale: $lang) === $text) {
             return self::Service;
         }
