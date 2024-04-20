@@ -21,8 +21,9 @@ enum UniversityTypeMethod: string
         };
     }
 
-    public static function fromText(?string $text, string $lang): ?UniversityTypeMethod
+    public static function fromText(?string $text, Language $lang): ?UniversityTypeMethod
     {
+        $lang = $lang->value;
         if (__('Davlat oliy ta\'lim muassasasiga', locale: $lang) === $text) {
             return self::StateUniversity;
         }

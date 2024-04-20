@@ -33,10 +33,7 @@ class EnterToUniversity extends BaseAction
     {
         $this->message->sendMessage(
             text: __('Oliy o‘quv yurtlariga topshirish uchun qanday tayyorgarlik ko‘ryapsiz?'),
-            reply_markup: json_encode([
-                'keyboard' => Keyboard::universityPreparationMethodsList(),
-                'resize_keyboard' => true,
-            ])
+            reply_markup:  Keyboard::universityPreparationMethodsList()
         );
 
         $this->survey->update([
@@ -56,23 +53,14 @@ class EnterToUniversity extends BaseAction
         if (!$method) {
             $this->message->sendMessage(
                 text: __('Oliy o‘quv yurtlariga topshirish uchun qanday tayyorgarlik ko‘ryapsiz?'),
-                reply_markup: json_encode([
-                    'keyboard' => Keyboard::universityPreparationMethodsList(),
-                    'resize_keyboard' => true,
-                ])
+                reply_markup: Keyboard::universityPreparationMethodsList()
             );
 
             return;
         }
 
-        if ($method->is(UniversityPreparationMethod::Back)) {
-            $this->action->clear();
-            SendMainMessage::send($this->from_id, $this->chat_id);
-            return;
-        }
-
         if ($method->is(UniversityPreparationMethod::Other)) {
-            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::remove());
+            $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::back());
             $this->action->set(static::class, Method::GetUniversityPreparationMethodOtherSendUniversitiesList);
             return;
         }
@@ -92,6 +80,8 @@ class EnterToUniversity extends BaseAction
 
     public function getUniversityPreparationMethodOtherSendUniversitiesListRequest(): void
     {
+        BackAction::back($this->text, $this->user, fn() => $this->sendUniversityPreparationMethodRequest());
+
         if (str($this->text)->length() > 100) {
             $this->message->sendMessage(__('Kiriting'));
             return;
@@ -112,6 +102,7 @@ class EnterToUniversity extends BaseAction
 
     public function getUniversityFinishSurveyRequest(): void
     {
+        BackAction::back($this->text, $this->user, fn() => $this->sendUniversityPreparationMethodRequest());
 
         $method = UniversityTypeMethod::fromText($this->text, $this->user->language);
 

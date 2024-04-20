@@ -112,21 +112,24 @@ class Keyboard
         ];
     }
 
-    public static function universityPreparationMethodsList(): array
+    public static function universityPreparationMethodsList(): string
     {
-        return [
-            [
-                ['text' => UniversityPreparationMethod::SchoolKnowledge->text()],
-                ['text' => UniversityPreparationMethod::GoToAdditionalCourses->text()],
+        return json_encode([
+            'keyboard' => [
+                [
+                    ['text' => UniversityPreparationMethod::SchoolKnowledge->text()],
+                    ['text' => UniversityPreparationMethod::GoToAdditionalCourses->text()],
+                ],
+                [
+                    ['text' => UniversityPreparationMethod::GoToRepetition->text()],
+                    ['text' => UniversityPreparationMethod::Other->text()],
+                ],
+                [
+                    ['text' => BackButton::Back->text()],
+                ],
             ],
-            [
-                ['text' => UniversityPreparationMethod::GoToRepetition->text()],
-                ['text' => UniversityPreparationMethod::Other->text()],
-            ],
-            [
-                ['text' => UniversityPreparationMethod::Back->text()],
-            ],
-        ];
+            'resize_keyboard' => true,
+        ]);
     }
 
     public static function universityTypesList(): array
@@ -141,7 +144,7 @@ class Keyboard
                 ['text' => UniversityTypeMethod::Other->text()],
             ],
             [
-                ['text' => UniversityTypeMethod::Back->text()],
+                ['text' => BackButton::Back->text()],
             ],
         ];
     }
