@@ -21,7 +21,7 @@ class ChatDTO
             id: $chat['id'],
             first_name: $chat['first_name'],
             type: ChatType::tryFrom($chat['type']),
-            username: $chat['username'],
+            username: $chat['username'] ?? null,
         );
     }
 }

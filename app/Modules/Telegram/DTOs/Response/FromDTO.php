@@ -20,7 +20,7 @@ class FromDTO
             id: $from['id'],
             is_bot: $from['is_bot'],
             first_name: $from['first_name'],
-            username: $from['username'],
+            username: $from['username'] ?? null,
             language_code: $from['language_code'] ?? null,
         );
     }
