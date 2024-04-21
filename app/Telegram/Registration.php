@@ -48,6 +48,8 @@ class Registration extends BaseAction
             }
 
             $this->user->update(['language' => $lang]);
+
+            app()->setLocale($lang->value);
         }
 
         Request::sendMessage($this->chat_id, __('Familiya ism sharifinigzni kiriting'), reply_markup: Keyboard::back());
@@ -98,7 +100,7 @@ class Registration extends BaseAction
     {
         if (!$is_back) {
             BackAction::back($this->text, $this->user, fn() => $this->getNameSendBirthdateRequest(true));
-            if (!$this->message->contact && !str($this->text)->isMatch('/^\+998\d{9}$/')) {
+            if (!$this->message->contact && !str($this->text)->isMatch('/^\+998-\d{2}-\d{3}(-\d{2}){2}/')) {
                 Request::sendMessage($this->chat_id, __('Telefon raqamingizni kiriting'), reply_markup: json_encode([
                     'keyboard' => Keyboard::sharePhone(),
                     'resize_keyboard' => true,
@@ -107,7 +109,7 @@ class Registration extends BaseAction
             }
 
             $this->user->update([
-                'phone' => str($this->message->contact?->phone_number ?: $this->text)->remove('+')
+                'phone' => str($this->message->contact?->phone_number ?: $this->text)->replaceMatches('/\D/', '')
             ]);
         }
 
@@ -166,7 +168,7 @@ class Registration extends BaseAction
         $this->action->clear();
 
         $this->message->sendMessage(
-            text: __("Ro'yxatdan o'tkaningiz uchun tashakkur!\n\nPoytaxtdagi eng yorqin loyihalar faqat sizlar uchun!\n\nBizni kuting, eng yaxshi takliflar faqat bizdan!"),
+            text: __("Ro'yhatdan o'tdingiz"),
             reply_markup: Keyboard::remove());
 
         SendMainMessage::send($this->from_id, $this->chat_id);

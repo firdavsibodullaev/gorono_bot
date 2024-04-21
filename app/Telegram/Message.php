@@ -5,6 +5,7 @@ namespace App\Telegram;
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\BotUser\BotUserCreateAction;
 use App\DTOs\BotUser\BotUserCreateDTO;
+use App\Enums\Language;
 use App\Enums\MainMessage;
 use App\Exceptions\UpdateNotPermittedException;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
@@ -36,6 +37,7 @@ class Message extends BaseUpdate
         $this->chat_id = $update->message->chat->id;
         $this->text = $update->message->text;
         $this->action = Action::make($this->from_id, $this->chat_id);
+        $this->setLanguage();
 
     }
 
@@ -82,5 +84,14 @@ class Message extends BaseUpdate
         $user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
 
         return MainMessage::fromText($this->text, $user->language);
+    }
+
+    private function setLanguage(): void
+    {
+        $user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
+
+        $language = $user?->language ?: (Language::tryFrom($this->message->from->language_code) ?? Language::Uz);
+
+        app()->setLocale($language->value);
     }
 }
