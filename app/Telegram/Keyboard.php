@@ -53,7 +53,7 @@ class Keyboard
     {
         return [
             [
-                ['text' => __('Telefon raqami bilan ulashish'), 'request_contact' => true]
+                ['text' => __('Telefon raqamini ulashish'), 'request_contact' => true]
             ],
             [
                 ['text' => BackButton::Back->text()]
