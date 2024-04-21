@@ -166,7 +166,7 @@ class Registration extends BaseAction
         $this->action->clear();
 
         $this->message->sendMessage(
-            text: __('Ro\'yxatdan o\'tkaningiz uchun tashakkur!<br/><br/>Poytaxtdagi eng yorqin loyihalar faqat sizlar uchun!<br/><br/>Bizni kuting, eng yaxshi takliflar faqat bizdan!'),
+            text: __("Ro'yxatdan o'tkaningiz uchun tashakkur!\n\nPoytaxtdagi eng yorqin loyihalar faqat sizlar uchun!\n\nBizni kuting, eng yaxshi takliflar faqat bizdan!"),
             reply_markup: Keyboard::remove());
 
         SendMainMessage::send($this->from_id, $this->chat_id);
