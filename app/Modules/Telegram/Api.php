@@ -7,6 +7,7 @@ use App\Modules\Telegram\Enums\Method;
 use App\Modules\Telegram\Exceptions\TelegramTokenNotExist;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\Http;
 
 class Api
@@ -46,6 +47,14 @@ class Api
     public function send(Method $method, ?BaseDTO $dto = null): array
     {
         $request = $this->getClient()->get($method->value, $dto?->toArray() ?: []);
+
+        Context::add([
+            'telegram-request-payload' => [
+                'method' => $method->value,
+                'params' => $dto?->toArray()
+            ],
+            'telegram-response' => $request->json() ?? $request->body()
+        ]);
 
         return $request->json();
     }

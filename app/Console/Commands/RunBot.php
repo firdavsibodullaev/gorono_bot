@@ -7,6 +7,7 @@ use App\Modules\Telegram\Facades\Request;
 use App\Telegram\BotInit;
 use Illuminate\Console\Command;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Support\Facades\Log;
 use Throwable;
 
 class RunBot extends Command
@@ -57,6 +58,11 @@ class RunBot extends Command
         } catch (Throwable $e) {
             $this->components->error("Error: " . $e->getMessage());
             sleep(1);
+            Log::channel('daily')->error("Telegram error", [
+                'message' => $e->getMessage(),
+                'file' => $e->getMessage(),
+                'line' => $e->getLine(),
+            ]);
         }
         goto loop;
     }
