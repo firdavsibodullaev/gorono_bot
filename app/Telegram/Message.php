@@ -57,7 +57,6 @@ class Message extends BaseUpdate
             return;
         }
 
-
         $action = Action::make($this->message->from->id, $this->chat_id)->get();
         $main_message = $this->getMainMessage();
 
@@ -75,7 +74,7 @@ class Message extends BaseUpdate
 
     private function isCommand(): bool
     {
-        return $this->text == '/start';
+        return in_array($this->text, ['/start', '/tozalash']);
     }
 
     private function getMainMessage(): MainMessage|false

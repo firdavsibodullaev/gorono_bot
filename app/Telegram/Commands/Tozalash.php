@@ -5,11 +5,9 @@ namespace App\Telegram\Commands;
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Models\BotUser;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
-use App\Telegram\Action\Action;
-use App\Telegram\Registration;
-use App\Telegram\SendMainMessage;
+use Illuminate\Support\Facades\Artisan;
 
-class Start
+class Tozalash
 {
     public int $from_id;
     public int $chat_id;
@@ -24,13 +22,8 @@ class Start
 
     public function __invoke(): void
     {
-        (new Action($this->from_id, $this->chat_id))->clear();
-
-        if (!$this->user->is_registered) {
-            (new Registration($this->message))->index();
-            return;
-        }
-
-        SendMainMessage::send($this->from_id, $this->chat_id);
+        $this->user->surveys()->forceDelete();
+        $this->user->forceDelete();
+        Artisan::call('cache:clear');
     }
 }
