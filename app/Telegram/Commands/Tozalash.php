@@ -5,7 +5,7 @@ namespace App\Telegram\Commands;
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Models\BotUser;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
-use Illuminate\Support\Facades\Artisan;
+use App\Telegram\Action\Action;
 
 class Tozalash
 {
@@ -24,6 +24,7 @@ class Tozalash
     {
         $this->user->surveys()->forceDelete();
         $this->user->forceDelete();
-        Artisan::call('cache:clear');
+        Action::make($this->from_id, $this->chat_id)->clear();
+        $this->message->sendMessage("Tozalandi");
     }
 }

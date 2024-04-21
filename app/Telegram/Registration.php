@@ -106,7 +106,9 @@ class Registration extends BaseAction
                 return;
             }
 
-            $this->user->update(['phone' => $this->message->contact?->phone_number ?: $this->text]);
+            $this->user->update([
+                'phone' => str($this->message->contact?->phone_number ?: $this->text)->remove('+')
+            ]);
         }
 
         Request::sendMessage($this->chat_id, __('Tumaningizni tanlang'), reply_markup: Keyboard::districts($this->user->language));
@@ -162,6 +164,10 @@ class Registration extends BaseAction
         ]);
 
         $this->action->clear();
+
+        $this->message->sendMessage(
+            text: __('Ro\'yxatdan o\'tkaningiz uchun tashakkur!<br/><br/>Poytaxtdagi eng yorqin loyihalar faqat sizlar uchun!<br/><br/>Bizni kuting, eng yaxshi takliflar faqat bizdan!'),
+            reply_markup: Keyboard::remove());
 
         SendMainMessage::send($this->from_id, $this->chat_id);
     }
