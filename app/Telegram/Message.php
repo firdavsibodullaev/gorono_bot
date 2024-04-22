@@ -5,8 +5,8 @@ namespace App\Telegram;
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\BotUser\BotUserCreateAction;
 use App\DTOs\BotUser\BotUserCreateDTO;
-use App\Enums\Language;
 use App\Enums\AfterSchoolGoal;
+use App\Enums\Language;
 use App\Exceptions\UpdateNotPermittedException;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
@@ -76,7 +76,13 @@ class Message extends BaseUpdate
 
     private function isCommand(): bool
     {
-        return in_array($this->text, ['/start', '/tozalash']);
+        $commands = ['/start'];
+
+        if (app()->isLocal()) {
+            $commands[] = '/tozalash';
+        }
+
+        return in_array($this->text, $commands);
     }
 
     private function getMainMessage(): AfterSchoolGoal|false
