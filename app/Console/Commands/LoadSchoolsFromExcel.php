@@ -48,7 +48,7 @@ class LoadSchoolsFromExcel extends Command
         return 0;
     }
 
-    private function loadToDatabase(Collection $schools)
+    private function loadToDatabase(Collection $schools): void
     {
         $schools_result = collect();
         $schools->each(function (array $school_item) use (&$schools_result) {

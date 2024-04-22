@@ -41,7 +41,7 @@ class Message extends BaseUpdate
     {
         match ($this->message->chat->type) {
             ChatType::Private => (new PrivateMessage($this->update))->index(),
-            default => ''
+            default => null
         };
     }
 

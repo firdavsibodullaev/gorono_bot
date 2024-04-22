@@ -4,6 +4,7 @@ namespace App\Telegram;
 
 use App\Exceptions\StopExecutionException;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
+use App\Telegram\Update\Message;
 use App\Telegram\Update\Message\PrivateMessage;
 use App\Telegram\Update\MyChatMember;
 
@@ -17,7 +18,7 @@ class BotInit
     {
         try {
             if ($this->update->message) {
-                PrivateMessage::make($this->update)->index();
+                Message::make($this->update)->index();
             } elseif ($this->update->my_chat_member) {
                 MyChatMember::make($this->update)->index();
             }

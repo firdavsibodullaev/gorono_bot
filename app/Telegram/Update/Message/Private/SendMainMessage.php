@@ -40,10 +40,7 @@ class SendMainMessage
         Request::sendMessage(
             $this->chat_id,
             __('Maktabni bitirganingizdan so\'ng nima qilmoqchisiz?'),
-            reply_markup: json_encode([
-                'keyboard' => Keyboard::afterSchoolGoal(),
-                'resize_keyboard' => true,
-            ])
+            reply_markup: Keyboard::afterSchoolGoal()
         );
     }
 }

@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->text('university_preparation_method')->nullable();
             $table->text('university_type')->nullable();
             $table->text('job_direction')->nullable();
+            $table->string('language');
             $table->boolean('is_finished')->default(false);
             $table->timestamps();
         });

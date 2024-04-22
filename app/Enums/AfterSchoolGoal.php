@@ -12,7 +12,6 @@ enum AfterSchoolGoal: string
     case EnterToUniversity = 'enter_to_university';
     case WantToWork = 'want_to_work';
     case WantToStudyProfession = 'want_to_study_profession';
-    case WantWorkAbroad = 'want_work_abroad';
     case IDontKnowYet = 'i_dont_know_yet';
     case Other = 'other';
 
@@ -34,10 +33,6 @@ enum AfterSchoolGoal: string
             return self::WantToStudyProfession;
         }
 
-        if (__('Xorijda ishlamoqchiman') === $text) {
-            return self::WantWorkAbroad;
-        }
-
         if (__('Hali bir qarorga kelganim yo\'q', locale: $language) === $text) {
             return self::IDontKnowYet;
         }
@@ -55,7 +50,6 @@ enum AfterSchoolGoal: string
             self::EnterToUniversity => __('Oliy ta\'lim muassasasiga kirmoqchiman'),
             self::WantToWork => __('Ishlamoqchiman'),
             self::WantToStudyProfession => __('Kasb-hunar o\'rganmoqchiman'),
-            self::WantWorkAbroad => __('Xorijda ishlamoqchiman'),
             self::IDontKnowYet => __('Hali bir qarorga kelganim yo\'q'),
             self::Other => __('Boshqa')
         };
@@ -67,7 +61,7 @@ enum AfterSchoolGoal: string
             self::EnterToUniversity => EnterToUniversity::class,
             self::WantToWork => WantToWork::class,
             self::WantToStudyProfession => WantToStudyProfession::class,
-            self::WantWorkAbroad, self::Other, self::IDontKnowYet => OneStepAnswer::class
+            self::Other, self::IDontKnowYet => OneStepAnswer::class
         };
     }
 

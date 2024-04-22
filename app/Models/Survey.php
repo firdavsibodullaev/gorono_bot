@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\AfterSchoolGoal;
+use App\Enums\Language;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $university_preparation_method
  * @property string $university_type
  * @property string $job_direction
+ * @property Language $language
  * @property boolean $is_finished
  */
 class Survey extends Model
@@ -27,6 +29,7 @@ class Survey extends Model
         'university_preparation_method',
         'university_type',
         'job_direction',
+        'language',
         'is_finished',
     ];
 
@@ -34,7 +37,8 @@ class Survey extends Model
     {
         return [
             'type' => AfterSchoolGoal::class,
-            'is_finished' => 'boolean'
+            'is_finished' => 'boolean',
+            'language' => Language::class
         ];
     }
 }

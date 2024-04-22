@@ -94,22 +94,24 @@ class Keyboard
             ->toArray();
     }
 
-    public static function afterSchoolGoal(): array
+    public static function afterSchoolGoal(): false|string
     {
-        return [
-            [
-                ['text' => AfterSchoolGoal::EnterToUniversity->text()],
-                ['text' => AfterSchoolGoal::WantToWork->text()],
+        return json_encode([
+            'keyboard' => [
+                [
+                    ['text' => AfterSchoolGoal::EnterToUniversity->text()],
+                    ['text' => AfterSchoolGoal::WantToWork->text()],
+                ],
+                [
+                    ['text' => AfterSchoolGoal::WantToStudyProfession->text()],
+                    ['text' => AfterSchoolGoal::IDontKnowYet->text()],
+                ],
+                [
+                    ['text' => AfterSchoolGoal::Other->text()],
+                ],
             ],
-            [
-                ['text' => AfterSchoolGoal::WantToStudyProfession->text()],
-                ['text' => AfterSchoolGoal::WantWorkAbroad->text()],
-            ],
-            [
-                ['text' => AfterSchoolGoal::IDontKnowYet->text()],
-                ['text' => AfterSchoolGoal::Other->text()],
-            ],
-        ];
+            'resize_keyboard' => true,
+        ]);
     }
 
     public static function universityPreparationMethodsList(): string
