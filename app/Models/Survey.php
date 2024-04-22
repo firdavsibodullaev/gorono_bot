@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Enums\AfterSchoolGoal;
 use App\Enums\Language;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property-read int $id
@@ -17,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $job_direction
  * @property Language $language
  * @property boolean $is_finished
+ * @property-read BotUser $botUser
  */
 class Survey extends Model
 {
@@ -40,5 +43,24 @@ class Survey extends Model
             'is_finished' => 'boolean',
             'language' => Language::class
         ];
+    }
+
+    public function botUser(): BelongsTo
+    {
+        return $this->belongsTo(BotUser::class);
+    }
+
+    public function result(): Attribute
+    {
+        $result = match ($this->type) {
+            AfterSchoolGoal::EnterToUniversity => "$this->university_preparation_method, $this->university_type",
+            AfterSchoolGoal::WantToWork, AfterSchoolGoal::WantToStudyProfession, AfterSchoolGoal::Other => $this->job_direction,
+            default => ''
+        };
+
+
+        $result = "$this->after_school_goal, $result";
+
+        return Attribute::get(fn() => $result);
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -25,6 +26,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property bool $is_registered
  * @property-read bool $has_survey
  * @property-read Collection $surveys
+ * @property-read District $district
+ * @property-read School $school
  */
 class BotUser extends Model
 {
@@ -56,6 +59,16 @@ class BotUser extends Model
     public function surveys(): HasMany
     {
         return $this->hasMany(Survey::class);
+    }
+
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class);
+    }
+
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class);
     }
 
     public function hasSurvey(): Attribute
