@@ -1,66 +1,97 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Гороно - опросник выпускников
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Требования
 
-## About Laravel
+- SSL сертификат
+- php8.2
+- nginx (Настройка nginx: <a href="https://laravel.com/docs/11.x/deployment#nginx">ссылка</a>)
+- postgres/mysql (возможная последняя версия)
+- composer
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### php-extensions
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- php8.2-redis
+- php8.2-ctype
+- php8.2-curl
+- php8.2-dom
+- php8.2-fileinfo
+- php8.2-filter
+- php8.2-hash
+- php8.2-mbstring
+- php8.2-openssl
+- php8.2-pcre
+- php8.2-pdo
+- php8.2-session
+- php8.2-tokenizer
+- php8.2-xml
+- php8.2-zip
+- php8.2-gd2
+- php8.2-iconv
+- php8.2-simplexml
+- php8.2-xmlreader
+- php8.2-zlib
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Установка
 
-## Learning Laravel
+### Загрузите из git:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+git clone http://git.tashkent.uz/ibodullaev.firdavs/gorono_bot.git
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### Запустите composer
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```bash
+composer install --optimize-autoloader --no-dev
+```
 
-## Laravel Sponsors
+### Создайте файл .env
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+cp .env.example .env
+```
 
-### Premium Partners
+### Сгенерируйте ключ
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```bash
+php artisan key:generate
+```
 
-## Contributing
+### Конфигурация .env
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+В файле `.env`
 
-## Code of Conduct
+```dotenv
+APP_NAME="Bitiruvchi 2024"
+APP_ENV=production
+APP_KEY=
+APP_DEBUG=true
+APP_TIMEZONE=Asia/Tashkent
+APP_URL=domain
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Конфигурация базы данных
 
-## Security Vulnerabilities
+```dotenv
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=
+DB_USERNAME=
+DB_PASSWORD=
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### Токен телеграм бота
 
-## License
+```dotnev
+TELEGRAM_BOT_TOKEN=6943535856:AAG7J9lhill3dKPDkBrcpWPtwb07vUCcIIw
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+> Если база данных MySql, `DB_CONNECTION=mysql`
+
+### Оптимизация
+
+```bash
+php artisan optimize
+```
+> Оптимизация должна быть в конце
