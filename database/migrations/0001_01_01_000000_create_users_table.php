@@ -24,7 +24,7 @@ return new class extends Migration {
         User::query()->create([
             'name' => 'admin',
             'username' => 'admin',
-            'password' => Hash::make('P@$sVV0Rd'),
+            'password' => Hash::make('P@$5VV000R21_'),
         ]);
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

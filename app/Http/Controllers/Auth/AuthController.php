@@ -28,6 +28,14 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('log-viewer.index',absolute: false));
+        return redirect()->intended(route('log-viewer.index', absolute: false));
+    }
+
+    public function logout(Request $request): RedirectResponse
+    {
+        $request->session()->invalidate();
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('login', absolute: false));
     }
 }
