@@ -2,10 +2,10 @@
 
 namespace App\Enums;
 
-use App\Telegram\EnterToUniversity;
-use App\Telegram\OneStepAnswer;
-use App\Telegram\WantToStudyProfession;
-use App\Telegram\WantToWork;
+use App\Telegram\Update\Message\Private\EnterToUniversity;
+use App\Telegram\Update\Message\Private\OneStepAnswer;
+use App\Telegram\Update\Message\Private\WantToStudyProfession;
+use App\Telegram\Update\Message\Private\WantToWork;
 
 enum AfterSchoolGoal: string
 {

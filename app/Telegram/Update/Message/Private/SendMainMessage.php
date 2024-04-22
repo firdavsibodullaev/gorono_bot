@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Telegram;
+namespace App\Telegram\Update\Message\Private;
 
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Models\BotUser;
 use App\Modules\Telegram\Facades\Request;
 use App\Telegram\Action\Action;
+use App\Telegram\Keyboard;
 
 class SendMainMessage
 {

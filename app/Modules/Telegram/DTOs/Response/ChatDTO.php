@@ -8,8 +8,9 @@ class ChatDTO
 {
     public function __construct(
         public int      $id,
-        public string   $first_name,
         public ChatType $type,
+        public ?string  $first_name = null,
+        public ?string  $title = null,
         public ?string  $username = null,
     )
     {
@@ -19,8 +20,9 @@ class ChatDTO
     {
         return new static(
             id: $chat['id'],
-            first_name: $chat['first_name'],
             type: ChatType::tryFrom($chat['type']),
+            first_name: $chat['first_name'] ?? null,
+            title: $chat['title'] ?? null,
             username: $chat['username'] ?? null,
         );
     }

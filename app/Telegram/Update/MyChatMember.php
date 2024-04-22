@@ -1,16 +1,18 @@
 <?php
 
-namespace App\Telegram;
+namespace App\Telegram\Update;
 
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\BotUser\BotUserCreateAction;
 use App\DTOs\BotUser\BotUserCreateDTO;
 use App\Enums\Language;
+use App\Exceptions\UpdateNotPermittedException;
 use App\Exceptions\WrongInstanceException;
 use App\Models\BotUser;
 use App\Modules\Telegram\DTOs\Response\MyChatMemberDTO;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
 use App\Modules\Telegram\Enums\ChatMemberStatus;
+use App\Modules\Telegram\Enums\ChatType;
 
 class MyChatMember extends BaseUpdate
 {
@@ -19,9 +21,16 @@ class MyChatMember extends BaseUpdate
     public int $chat_id;
     public ChatMemberStatus $status;
 
+    /**
+     * @throws UpdateNotPermittedException
+     */
     public function __construct(protected UpdateDTO $update)
     {
         parent::__construct($this->update);
+
+        if (!$update->my_chat_member || !$update->my_chat_member->chat->type->is(ChatType::Private)) {
+            throw new UpdateNotPermittedException("Only private chat is allowed");
+        }
 
         $this->my_chat_member = $this->update->my_chat_member;
         $this->from_id = $this->update->my_chat_member->from->id;

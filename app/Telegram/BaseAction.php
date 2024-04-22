@@ -5,6 +5,7 @@ namespace App\Telegram;
 use App\Enums\Method;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
 use App\Telegram\Action\Action;
+use App\Telegram\Update\Message\Private\SendMainMessage;
 
 abstract class BaseAction
 {

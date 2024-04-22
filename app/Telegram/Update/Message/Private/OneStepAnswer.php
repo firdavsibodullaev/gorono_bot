@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Telegram;
+namespace App\Telegram\Update\Message\Private;
 
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\Survey\SurveyFindOrCreateAction;
@@ -10,6 +10,9 @@ use App\Enums\Method;
 use App\Models\BotUser;
 use App\Models\Survey;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
+use App\Telegram\BackAction;
+use App\Telegram\BaseAction;
+use App\Telegram\Keyboard;
 
 class OneStepAnswer extends BaseAction
 {

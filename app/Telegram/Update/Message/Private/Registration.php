@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Telegram;
+namespace App\Telegram\Update\Message\Private;
 
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\District\DistrictsFromNameAction;
@@ -12,6 +12,9 @@ use App\Enums\Method;
 use App\Models\BotUser;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
 use App\Modules\Telegram\Facades\Request;
+use App\Telegram\BackAction;
+use App\Telegram\BaseAction;
+use App\Telegram\Keyboard;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 

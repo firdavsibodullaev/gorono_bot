@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Telegram;
+namespace App\Telegram\Update\Message\Private;
 
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
 use App\Telegram\Commands\Start;
 use App\Telegram\Commands\Tozalash;
+use App\Telegram\Update\BaseUpdate;
 
 class HandleCommand extends BaseUpdate
 {

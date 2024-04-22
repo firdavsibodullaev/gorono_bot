@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Telegram;
+namespace App\Telegram\Update;
 
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
 

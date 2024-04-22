@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Telegram;
+namespace App\Telegram\Update;
 
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
-use App\Actions\BotUser\BotUserCreateAction;
-use App\DTOs\BotUser\BotUserCreateDTO;
 use App\Enums\AfterSchoolGoal;
 use App\Enums\Language;
 use App\Exceptions\UpdateNotPermittedException;
@@ -12,6 +10,7 @@ use App\Modules\Telegram\DTOs\Response\MessageDTO;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
 use App\Modules\Telegram\Enums\ChatType;
 use App\Telegram\Action\Action;
+use App\Telegram\Update\Message\PrivateMessage;
 
 class Message extends BaseUpdate
 {
@@ -28,50 +27,22 @@ class Message extends BaseUpdate
     {
         parent::__construct($this->update);
 
-        if (!$update->message || !$update->message->chat->type->is(ChatType::Private)) {
-            throw new UpdateNotPermittedException("Only private chat is allowed");
+        if (!$update->message) {
+            throw new UpdateNotPermittedException("Only messages are allowed");
         }
 
         $this->message = $update->message;
-        $this->from_id = $update->message->from->id;
-        $this->chat_id = $update->message->chat->id;
-        $this->text = $update->message->text;
-        $this->action = Action::make($this->from_id, $this->chat_id);
-        $this->setLanguage();
-
     }
 
+    /**
+     * @throws UpdateNotPermittedException
+     */
     public function index(): void
     {
-        $user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
-
-        if (!$user) {
-            $user = BotUserCreateAction::make(BotUserCreateDTO::fromMessage($this->message))->run();
-        }
-
-        if ($this->message->isCommand() && $this->isCommand()) {
-            HandleCommand::make($this->update)->index();
-            return;
-        }
-
-        if (!$user->is_registered) {
-            (new Registration($this->message))->index();
-            return;
-        }
-
-        $action = Action::make($this->message->from->id, $this->chat_id)->get();
-        $main_message = $this->getMainMessage();
-
-        if (!$action?->class && $main_message) {
-            $action = Action::make($this->from_id, $this->chat_id)->set($main_message->class());
-        }
-
-        if ($action) {
-            (new $action->class($this->message, $main_message))->index();
-            return;
-        }
-
-        SendMainMessage::send($this->message->from->id, $this->chat_id);
+        match ($this->message->chat->type) {
+            ChatType::Private => (new PrivateMessage($this->update))->index(),
+            default => ''
+        };
     }
 
     private function isCommand(): bool

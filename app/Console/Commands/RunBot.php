@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Exceptions\UpdateNotPermittedException;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
 use App\Modules\Telegram\Facades\Request;
 use App\Telegram\BotInit;
@@ -53,7 +54,7 @@ class RunBot extends Command
 
             $this->sleepIfNecessary();
 
-        } catch (ConnectionException) {
+        } catch (ConnectionException|UpdateNotPermittedException) {
             sleep(1);
         } catch (Throwable $e) {
             $this->components->error("Error: " . $e->getMessage());

@@ -6,8 +6,8 @@ use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Models\BotUser;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
 use App\Telegram\Action\Action;
-use App\Telegram\Registration;
-use App\Telegram\SendMainMessage;
+use App\Telegram\Update\Message\Private\Registration;
+use App\Telegram\Update\Message\Private\SendMainMessage;
 
 class Start
 {
