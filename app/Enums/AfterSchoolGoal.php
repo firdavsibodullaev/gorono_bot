@@ -7,7 +7,7 @@ use App\Telegram\OneStepAnswer;
 use App\Telegram\WantToStudyProfession;
 use App\Telegram\WantToWork;
 
-enum MainMessage: string
+enum AfterSchoolGoal: string
 {
     case EnterToUniversity = 'enter_to_university';
     case WantToWork = 'want_to_work';
@@ -16,7 +16,7 @@ enum MainMessage: string
     case IDontKnowYet = 'i_dont_know_yet';
     case Other = 'other';
 
-    public static function fromText(?string $text, Language $language): MainMessage|false
+    public static function fromText(?string $text, Language $language): AfterSchoolGoal|false
     {
         $language = $language->value;
         if ($text === null) {

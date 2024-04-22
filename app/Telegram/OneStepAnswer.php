@@ -5,7 +5,7 @@ namespace App\Telegram;
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\Survey\SurveyFindOrCreateAction;
 use App\DTOs\Survey\SurveyFindOrCreateDTO;
-use App\Enums\MainMessage;
+use App\Enums\AfterSchoolGoal;
 use App\Enums\Method;
 use App\Models\BotUser;
 use App\Models\Survey;
@@ -16,7 +16,7 @@ class OneStepAnswer extends BaseAction
     protected Survey $survey;
     protected BotUser $user;
 
-    public function __construct(MessageDTO $message, protected MainMessage|bool $mainMessage)
+    public function __construct(MessageDTO $message, protected AfterSchoolGoal|bool $mainMessage)
     {
         $this->method = Method::GetOneStepAnswerAndFinish;
 
@@ -34,7 +34,7 @@ class OneStepAnswer extends BaseAction
             'type' => $this->mainMessage,
         ]);
 
-        if ($this->mainMessage->is(MainMessage::Other)) {
+        if ($this->mainMessage->is(AfterSchoolGoal::Other)) {
             $this->message->sendMessage(__('Kiriting'), reply_markup: Keyboard::back());
             $this->action->set(static::class, Method::GetOneStepOtherAnswerAndFinish);
             return;

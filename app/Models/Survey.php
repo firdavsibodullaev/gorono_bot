@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-use App\Enums\MainMessage;
+use App\Enums\AfterSchoolGoal;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * @property-read int $id
  * @property int $bot_user_id
- * @property MainMessage $type
+ * @property AfterSchoolGoal $type
  * @property string $after_school_goal
  * @property string $university_preparation_method
  * @property string $university_type
@@ -33,7 +33,7 @@ class Survey extends Model
     protected function casts(): array
     {
         return [
-            'type' => MainMessage::class,
+            'type' => AfterSchoolGoal::class,
             'is_finished' => 'boolean'
         ];
     }

@@ -6,7 +6,7 @@ use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\Survey\SurveyFindOrCreateAction;
 use App\DTOs\Survey\SurveyFindOrCreateDTO;
 use App\Enums\JobType;
-use App\Enums\MainMessage;
+use App\Enums\AfterSchoolGoal;
 use App\Enums\Method;
 use App\Models\BotUser;
 use App\Models\Survey;
@@ -41,7 +41,7 @@ class WantToWork extends BaseAction
         if (!$is_back) {
             $this->survey->update([
                 'after_school_goal' => $this->text,
-                'type' => MainMessage::WantToWork
+                'type' => AfterSchoolGoal::WantToWork
             ]);
         }
 

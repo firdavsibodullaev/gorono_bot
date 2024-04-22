@@ -5,7 +5,7 @@ namespace App\Telegram;
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\Survey\SurveyFindOrCreateAction;
 use App\DTOs\Survey\SurveyFindOrCreateDTO;
-use App\Enums\MainMessage;
+use App\Enums\AfterSchoolGoal;
 use App\Enums\Method;
 use App\Enums\ProfessionType;
 use App\Models\BotUser;
@@ -38,7 +38,7 @@ class WantToStudyProfession extends BaseAction
         if (!$is_back) {
             $this->survey->update([
                 'after_school_goal' => $this->text,
-                'type' => MainMessage::WantToWork
+                'type' => AfterSchoolGoal::WantToWork
             ]);
         }
 

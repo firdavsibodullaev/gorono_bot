@@ -8,7 +8,7 @@ use App\DTOs\School\SchoolListDTO;
 use App\Enums\BackButton;
 use App\Enums\JobType;
 use App\Enums\Language;
-use App\Enums\MainMessage;
+use App\Enums\AfterSchoolGoal;
 use App\Enums\ProfessionType;
 use App\Enums\UniversityPreparationMethod;
 use App\Enums\UniversityTypeMethod;
@@ -98,16 +98,16 @@ class Keyboard
     {
         return [
             [
-                ['text' => MainMessage::EnterToUniversity->text()],
-                ['text' => MainMessage::WantToWork->text()],
+                ['text' => AfterSchoolGoal::EnterToUniversity->text()],
+                ['text' => AfterSchoolGoal::WantToWork->text()],
             ],
             [
-                ['text' => MainMessage::WantToStudyProfession->text()],
-                ['text' => MainMessage::WantWorkAbroad->text()],
+                ['text' => AfterSchoolGoal::WantToStudyProfession->text()],
+                ['text' => AfterSchoolGoal::WantWorkAbroad->text()],
             ],
             [
-                ['text' => MainMessage::IDontKnowYet->text()],
-                ['text' => MainMessage::Other->text()],
+                ['text' => AfterSchoolGoal::IDontKnowYet->text()],
+                ['text' => AfterSchoolGoal::Other->text()],
             ],
         ];
     }

@@ -6,7 +6,7 @@ use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\BotUser\BotUserCreateAction;
 use App\DTOs\BotUser\BotUserCreateDTO;
 use App\Enums\Language;
-use App\Enums\MainMessage;
+use App\Enums\AfterSchoolGoal;
 use App\Exceptions\UpdateNotPermittedException;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
@@ -79,11 +79,11 @@ class Message extends BaseUpdate
         return in_array($this->text, ['/start', '/tozalash']);
     }
 
-    private function getMainMessage(): MainMessage|false
+    private function getMainMessage(): AfterSchoolGoal|false
     {
         $user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
 
-        return MainMessage::fromText($this->text, $user->language);
+        return AfterSchoolGoal::fromText($this->text, $user->language);
     }
 
     private function setLanguage(): void
