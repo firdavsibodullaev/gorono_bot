@@ -94,7 +94,7 @@ class Keyboard
             ->toArray();
     }
 
-    public static function afterSchoolGoal(): false|string
+    public static function afterSchoolGoal(): false
     {
         return json_encode([
             'keyboard' => [
