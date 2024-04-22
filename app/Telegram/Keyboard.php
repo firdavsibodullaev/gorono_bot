@@ -5,10 +5,10 @@ namespace App\Telegram;
 use App\Actions\District\DistrictsListAction;
 use App\Actions\School\SchoolListAction;
 use App\DTOs\School\SchoolListDTO;
+use App\Enums\AfterSchoolGoal;
 use App\Enums\BackButton;
 use App\Enums\JobType;
 use App\Enums\Language;
-use App\Enums\AfterSchoolGoal;
 use App\Enums\ProfessionType;
 use App\Enums\UniversityPreparationMethod;
 use App\Enums\UniversityTypeMethod;
@@ -161,6 +161,9 @@ class Keyboard
             ],
             [
                 ['text' => JobType::Business->text()],
+                ['text' => JobType::Abroad->text()],
+            ],
+            [
                 ['text' => JobType::Other->text()],
             ],
             [

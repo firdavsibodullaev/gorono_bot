@@ -7,6 +7,7 @@ enum JobType: string
     case Service = 'service';
     case Manufacture = 'manufacture';
     case Business = 'business';
+    case Abroad = 'abroad';
     case Other = 'other';
     case Back = 'back';
 
@@ -16,6 +17,7 @@ enum JobType: string
             self::Service => __('Aholiga xizmat ko\'rsatish'),
             self::Manufacture => __('Ishlab chiqarish'),
             self::Business => __('Xususiy tadbirkorlik'),
+            self::Abroad => __('Chet elda'),
             self::Other => __('Boshqa'),
             self::Back => __('Ortga'),
         };
@@ -35,6 +37,10 @@ enum JobType: string
 
         if (__('Xususiy tadbirkorlik', locale: $lang) === $text) {
             return self::Business;
+        }
+
+        if (__('Chet elda', locale: $lang) === $text) {
+            return self::Abroad;
         }
 
         if (__('Boshqa', locale: $lang) === $text) {
