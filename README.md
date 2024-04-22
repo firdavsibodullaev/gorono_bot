@@ -64,7 +64,6 @@ php artisan key:generate
 ```dotenv
 APP_NAME="Bitiruvchi 2024"
 APP_ENV=production
-APP_KEY=
 APP_DEBUG=true
 APP_TIMEZONE=Asia/Tashkent
 APP_URL=domain
