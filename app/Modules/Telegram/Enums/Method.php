@@ -7,4 +7,5 @@ enum Method: string
     case GetUpdates = 'getUpdates';
     case SendMessage = 'sendMessage';
     case EditMessageText = 'editMessageText';
+    case SetWebhook = 'setWebhook';
 }

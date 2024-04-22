@@ -60,7 +60,7 @@ class RunBot extends Command
             sleep(1);
             Log::channel('daily')->error("Telegram error", [
                 'message' => $e->getMessage(),
-                'file' => $e->getMessage(),
+                'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
         }
