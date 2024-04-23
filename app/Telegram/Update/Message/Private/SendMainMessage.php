@@ -3,10 +3,11 @@
 namespace App\Telegram\Update\Message\Private;
 
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
+use App\Enums\BotUserType;
 use App\Models\BotUser;
-use App\Modules\Telegram\Facades\Request;
 use App\Telegram\Action\Action;
-use App\Telegram\Keyboard;
+use App\Telegram\School\SchoolUpdate;
+use App\Telegram\University\UniversityUpdate;
 
 class SendMainMessage
 {
@@ -26,21 +27,9 @@ class SendMainMessage
 
     public function __invoke(): void
     {
-        $user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
-
-        if ($user->has_survey) {
-            Request::sendMessage(
-                $this->chat_id,
-                'Siz so\'rovnomadan o\'tib bo\'lgansiz',
-                reply_markup: Keyboard::remove()
-            );
-            return;
-        }
-
-        Request::sendMessage(
-            $this->chat_id,
-            __('Maktabni bitirganingizdan so\'ng nima qilmoqchisiz?'),
-            reply_markup: Keyboard::afterSchoolGoal()
-        );
+        match ($this->user->type) {
+            BotUserType::School => (new SchoolUpdate($this->from_id, $this->chat_id))->index(),
+            BotUserType::Student => (new UniversityUpdate($this->from_id, $this->chat_id))->index()
+        };
     }
 }

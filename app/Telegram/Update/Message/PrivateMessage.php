@@ -6,6 +6,7 @@ use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Actions\BotUser\BotUserCreateAction;
 use App\DTOs\BotUser\BotUserCreateDTO;
 use App\Enums\AfterSchoolGoal;
+use App\Enums\BotUserType;
 use App\Enums\Language;
 use App\Exceptions\UpdateNotPermittedException;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
@@ -92,6 +93,10 @@ class PrivateMessage extends BaseUpdate
     private function getMainMessage(): AfterSchoolGoal|false
     {
         $user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
+
+        if ($user->type->is(BotUserType::Student)) {
+            return false;
+        }
 
         return AfterSchoolGoal::fromText($this->text, $user->language);
     }

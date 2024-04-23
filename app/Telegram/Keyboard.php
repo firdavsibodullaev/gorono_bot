@@ -4,9 +4,11 @@ namespace App\Telegram;
 
 use App\Actions\District\DistrictsListAction;
 use App\Actions\School\SchoolListAction;
+use App\Actions\University\UniversityListAction;
 use App\DTOs\School\SchoolListDTO;
 use App\Enums\AfterSchoolGoal;
 use App\Enums\BackButton;
+use App\Enums\BotUserType;
 use App\Enums\JobType;
 use App\Enums\Language;
 use App\Enums\ProfessionType;
@@ -14,6 +16,7 @@ use App\Enums\UniversityPreparationMethod;
 use App\Enums\UniversityTypeMethod;
 use App\Models\District;
 use App\Models\School;
+use App\Models\University;
 use Illuminate\Database\Eloquent\Collection;
 
 class Keyboard
@@ -79,22 +82,25 @@ class Keyboard
         ]);
     }
 
-    public static function schools(int $district_id, Language $language)
+    public static function schools(int $district_id, Language $language): string
     {
-        return SchoolListAction::make(new SchoolListDTO($district_id))
-            ->run()
-            ->chunk(2)
-            ->map(
-                callback: fn(Collection $schools) => $schools->map(
-                    callback: fn(School $school) => ['text' => $school->name($language)]
-                )->values()
-            )
-            ->push([['text' => BackButton::Back->text()]])
-            ->values()
-            ->toArray();
+        return json_encode([
+            'keyboard' => SchoolListAction::make(new SchoolListDTO($district_id))
+                ->run()
+                ->chunk(2)
+                ->map(
+                    callback: fn(Collection $schools) => $schools->map(
+                        callback: fn(School $school) => ['text' => $school->name($language)]
+                    )->values()
+                )
+                ->push([['text' => BackButton::Back->text()]])
+                ->values()
+                ->toArray(),
+            'resize_keyboard' => true,
+        ]);
     }
 
-    public static function afterSchoolGoal(): false
+    public static function afterSchoolGoal(): string
     {
         return json_encode([
             'keyboard' => [
@@ -202,6 +208,40 @@ class Keyboard
                 ],
             ],
             'resize_keyboard' => true,
+        ]);
+    }
+
+    public static function botUserType(): string
+    {
+        return json_encode([
+            'keyboard' => [
+                [
+                    ['text' => BotUserType::School->text()],
+                    ['text' => BotUserType::Student->text()],
+                ],
+                [
+                    ['text' => BackButton::Back->text()]
+                ]
+            ],
+            'resize_keyboard' => true,
+        ]);
+    }
+
+    public static function universities(Language $language): string
+    {
+        return json_encode([
+            'keyboard' => UniversityListAction::make()
+                ->run()
+                ->chunk(2)
+                ->map(
+                    callback: fn(Collection $universities) => $universities->map(
+                        callback: fn(University $university) => ['text' => $university->name($language)]
+                    )->values()
+                )
+                ->push([['text' => BackButton::Back->text()]])
+                ->values()
+                ->toArray(),
+            'resize_keyboard' => true
         ]);
     }
 }

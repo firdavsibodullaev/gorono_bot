@@ -8,7 +8,8 @@ enum Method: string
     case GetLanguageSendNameRequest = 'getLanguageSendNameRequest';
     case GetNameSendBirthdateRequest = 'getNameSendBirthdateRequest';
     case GetBirthdateSendPhoneRequest = 'getBirthdateSendPhoneRequest';
-    case GetPhoneSendDistrictRequest = 'getPhoneSendDistrictRequest';
+    case GetPhoneSendTypeRequest = 'getPhoneSendTypeRequest';
+    case GetTypeSendDistrictOrInstituteRequest = 'getTypeSendDistrictOrInstituteRequest';
     case GetDistrictSendSchoolRequest = 'getDistrictSendSchoolRequest';
     case GetSchoolFinishRegistration = 'getSchoolFinishRegistration';
     case SendUniversityPreparationMethodRequest = 'sendUniversityPreparationMethodRequest';
@@ -24,4 +25,5 @@ enum Method: string
     case GetProfessionOtherFinishSurvey = 'getProfessionOtherFinish';
     case GetOneStepAnswerAndFinish = 'getOneStepAnswerAndFinish';
     case GetOneStepOtherAnswerAndFinish = 'getOneStepOtherAnswerAndFinish';
+    case GetUniversityFinishRegistrationRequest = 'getUniversityFinishRegistrationRequest';
 }

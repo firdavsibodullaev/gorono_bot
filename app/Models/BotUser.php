@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BotUserType;
 use App\Enums\Language;
 use App\Modules\Telegram\Enums\ChatMemberStatus;
 use Carbon\Carbon;
@@ -17,10 +18,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $from_id
  * @property int $chat_id
  * @property string|null $name
+ * @property BotUserType|null $type
  * @property Carbon $birthdate
  * @property string $phone
  * @property int $district_id
  * @property int $school_id
+ * @property int $university_id
  * @property ChatMemberStatus $status
  * @property Language $language
  * @property bool $is_registered
@@ -28,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read Collection $surveys
  * @property-read District $district
  * @property-read School $school
+ * @property-read University $university
  */
 class BotUser extends Model
 {
@@ -37,10 +41,12 @@ class BotUser extends Model
         'from_id',
         'chat_id',
         'name',
+        'type',
         'birthdate',
         'phone',
         'district_id',
         'school_id',
+        'university_id',
         'status',
         'language',
         'is_registered',
@@ -52,7 +58,8 @@ class BotUser extends Model
             'status' => ChatMemberStatus::class,
             'is_registered' => 'boolean',
             'birthdate' => 'date',
-            'language' => Language::class
+            'language' => Language::class,
+            'type' => BotUserType::class
         ];
     }
 
@@ -69,6 +76,11 @@ class BotUser extends Model
     public function school(): BelongsTo
     {
         return $this->belongsTo(School::class);
+    }
+
+    public function university(): BelongsTo
+    {
+        return $this->belongsTo(University::class);
     }
 
     public function hasSurvey(): Attribute

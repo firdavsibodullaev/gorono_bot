@@ -15,10 +15,12 @@ return new class extends Migration {
             $table->unsignedBigInteger('from_id')->nullable();
             $table->unsignedBigInteger('chat_id')->nullable();
             $table->string('name', 255)->nullable();
+            $table->string('type', 20)->nullable();
             $table->date('birthdate')->nullable();
             $table->string('phone')->nullable();
             $table->foreignId('district_id')->nullable()->constrained('districts');
             $table->foreignId('school_id')->nullable()->constrained('schools');
+            $table->foreignId('university_id')->nullable()->constrained('universities');
             $table->string('status')->nullable();
             $table->string('language')->nullable();
             $table->boolean('is_registered')->default(false);
