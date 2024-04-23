@@ -10,26 +10,26 @@
 
 ### php-extensions
 
-- php8.2-redis
-- php8.2-ctype
-- php8.2-curl
-- php8.2-dom
-- php8.2-fileinfo
-- php8.2-filter
-- php8.2-hash
-- php8.2-mbstring
-- php8.2-openssl
-- php8.2-pcre
-- php8.2-pdo
-- php8.2-session
-- php8.2-tokenizer
-- php8.2-xml
-- php8.2-zip
-- php8.2-gd2
-- php8.2-iconv
-- php8.2-simplexml
-- php8.2-xmlreader
-- php8.2-zlib
+- php-redis
+- php-ctype
+- php-curl
+- php-dom
+- php-fileinfo
+- php-filter
+- php-hash
+- php-mbstring
+- php-openssl
+- php-pcre
+- php-pdo
+- php-session
+- php-tokenizer
+- php-xml
+- php-zip
+- php-gd2
+- php-iconv
+- php-simplexml
+- php-xmlreader
+- php-zlib
 
 ## Установка
 
@@ -87,6 +87,17 @@ TELEGRAM_BOT_TOKEN=6943535856:AAG7J9lhill3dKPDkBrcpWPtwb07vUCcIIw
 ```
 
 > Если база данных MySql, `DB_CONNECTION=mysql`
+
+### Загрузка списка районов, школ и ВУЗов
+
+```bash
+php artisan app:load-schools-from-excel
+```
+
+```bash
+php artisan app:load-university-from-excel
+```
+
 
 ### Оптимизация
 

@@ -22,12 +22,12 @@ class LoadSchoolsFromExcel extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Загрузка списка школ из Excel файла';
 
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
         $schools_excel_path = storage_path('app/excel/schools.xlsx');
         if (!file_exists($schools_excel_path)) {

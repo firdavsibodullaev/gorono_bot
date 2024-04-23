@@ -21,7 +21,7 @@ class LoadUniversityFromExcel extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Загрузка списка ВУЗов из Excel файла';
 
     /**
      * Execute the console command.
