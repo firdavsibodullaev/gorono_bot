@@ -7,14 +7,14 @@ use App\Models\University;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 
-class LoadUniversityFromExcel extends Command
+class LoadUniversitiesFromExcel extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'app:load-university-from-excel';
+    protected $signature = 'app:load-universities-from-excel';
 
     /**
      * The console command description.

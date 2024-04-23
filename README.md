@@ -95,7 +95,7 @@ php artisan app:load-schools-from-excel
 ```
 
 ```bash
-php artisan app:load-university-from-excel
+php artisan app:load-universities-from-excel
 ```
 
 
