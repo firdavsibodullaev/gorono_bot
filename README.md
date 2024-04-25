@@ -80,13 +80,13 @@ DB_USERNAME=
 DB_PASSWORD=
 ```
 
+> Если база данных MySql, `DB_CONNECTION=mysql`
+
 #### Токен телеграм бота
 
 ```dotnev
 TELEGRAM_BOT_TOKEN=
 ```
-
-> Если база данных MySql, `DB_CONNECTION=mysql`
 
 ### Загрузка списка районов, школ и ВУЗов
 
