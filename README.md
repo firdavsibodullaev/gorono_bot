@@ -83,7 +83,7 @@ DB_PASSWORD=
 #### Токен телеграм бота
 
 ```dotnev
-TELEGRAM_BOT_TOKEN=6943535856:AAG7J9lhill3dKPDkBrcpWPtwb07vUCcIIw
+TELEGRAM_BOT_TOKEN=
 ```
 
 > Если база данных MySql, `DB_CONNECTION=mysql`
