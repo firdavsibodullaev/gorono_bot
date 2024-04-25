@@ -98,6 +98,11 @@ php artisan app:load-schools-from-excel
 php artisan app:load-universities-from-excel
 ```
 
+### Вебхук
+
+```bash
+php artisan app:bot-set-webhook
+```
 
 ### Оптимизация
 
