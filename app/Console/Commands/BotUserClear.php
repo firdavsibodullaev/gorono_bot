@@ -29,9 +29,9 @@ class BotUserClear extends Command
      */
     public function handle(): int
     {
-        $from_id = $this->argument('from_id');
+        $from_id = (int)$this->argument('from_id');
 
-        $chat_id = $this->argument('chat_id') ?? $from_id;
+        $chat_id = (int)$this->argument('chat_id') ?? $from_id;
 
         $user = BotUserByFromIdChatIdAction::fromIds($from_id, $chat_id)->run();
 
