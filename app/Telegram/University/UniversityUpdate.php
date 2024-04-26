@@ -6,6 +6,7 @@ use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Models\BotUser;
 use App\Modules\Telegram\Facades\Request;
 use App\Telegram\Action\Action;
+use App\Telegram\Keyboard;
 
 class UniversityUpdate
 {
@@ -20,6 +21,10 @@ class UniversityUpdate
 
     public function index(): void
     {
-        Request::sendMessage($this->chat_id, __('Barcha yangiliklarni shu erda kuzatib boring'));
+        Request::sendMessage(
+            $this->chat_id,
+            __('Barcha yangiliklarni shu erda kuzatib boring'),
+            reply_markup: Keyboard::remove()
+        );
     }
 }

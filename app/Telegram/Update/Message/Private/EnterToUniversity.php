@@ -127,9 +127,6 @@ class EnterToUniversity extends BaseAction
 
         $this->action->clear();
 
-        $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'),
-            reply_markup: Keyboard::remove());
-
         SendMainMessage::send($this->from_id, $this->chat_id);
     }
 
@@ -145,8 +142,6 @@ class EnterToUniversity extends BaseAction
         $this->survey->update(['university_type' => $this->text, 'is_finished' => true]);
 
         $this->action->clear();
-
-        $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'));
 
         SendMainMessage::send($this->from_id, $this->chat_id);
     }

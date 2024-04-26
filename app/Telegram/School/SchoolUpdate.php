@@ -22,7 +22,11 @@ class SchoolUpdate
     public function index(): void
     {
         if ($this->user->has_survey) {
-            Request::sendMessage($this->chat_id, __('Barcha yangiliklarni shu erda kuzatib boring'));
+            Request::sendMessage(
+                $this->chat_id,
+                __('Barcha yangiliklarni shu erda kuzatib boring'),
+                reply_markup: Keyboard::remove()
+            );
             return;
         }
 

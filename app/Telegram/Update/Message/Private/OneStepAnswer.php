@@ -49,9 +49,6 @@ class OneStepAnswer extends BaseAction
 
         $this->action->clear();
 
-        $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'),
-            reply_markup: Keyboard::remove());
-
         SendMainMessage::send($this->from_id, $this->chat_id);
     }
 
@@ -67,8 +64,6 @@ class OneStepAnswer extends BaseAction
         $this->survey->update(['job_direction' => $this->text, 'is_finished' => true]);
 
         $this->action->clear();
-
-        $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'));
 
         SendMainMessage::send($this->from_id, $this->chat_id);
     }
