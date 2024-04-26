@@ -31,7 +31,7 @@ class BotUserClear extends Command
     {
         $from_id = (int)$this->argument('from_id');
 
-        $chat_id = (int)$this->argument('chat_id') ?? $from_id;
+        $chat_id = (int)($this->argument('chat_id') ?? $from_id);
 
         $user = BotUserByFromIdChatIdAction::fromIds($from_id, $chat_id)->run();
 
