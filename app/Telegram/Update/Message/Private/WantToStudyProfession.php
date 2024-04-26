@@ -11,6 +11,7 @@ use App\Enums\ProfessionType;
 use App\Models\BotUser;
 use App\Models\Survey;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
+use App\Modules\Telegram\Facades\Request;
 use App\Telegram\BackAction;
 use App\Telegram\BaseAction;
 use App\Telegram\Keyboard;
@@ -77,6 +78,8 @@ class WantToStudyProfession extends BaseAction
             __('So\'rovnomada qatnashganingiz uchun raxmat'),
             reply_markup: Keyboard::remove()
         );
+
+        Request::sendMessage($this->chat_id, __('Barcha yangiliklarni shu erda kuzatib boring'));
     }
 
     public function getProfessionOtherFinish(): void
@@ -93,5 +96,7 @@ class WantToStudyProfession extends BaseAction
         $this->action->clear();
 
         $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'));
+
+        SendMainMessage::send($this->from_id, $this->chat_id);
     }
 }

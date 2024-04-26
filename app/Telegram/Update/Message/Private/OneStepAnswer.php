@@ -51,6 +51,8 @@ class OneStepAnswer extends BaseAction
 
         $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'),
             reply_markup: Keyboard::remove());
+
+        SendMainMessage::send($this->from_id, $this->chat_id);
     }
 
     public function getOneStepOtherAnswerAndFinish(): void
@@ -67,5 +69,7 @@ class OneStepAnswer extends BaseAction
         $this->action->clear();
 
         $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'));
+
+        SendMainMessage::send($this->from_id, $this->chat_id);
     }
 }

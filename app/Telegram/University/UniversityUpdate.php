@@ -4,6 +4,7 @@ namespace App\Telegram\University;
 
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Models\BotUser;
+use App\Modules\Telegram\Facades\Request;
 use App\Telegram\Action\Action;
 
 class UniversityUpdate
@@ -19,6 +20,6 @@ class UniversityUpdate
 
     public function index(): void
     {
-        //
+        Request::sendMessage($this->chat_id, __('Barcha yangiliklarni shu erda kuzatib boring'));
     }
 }

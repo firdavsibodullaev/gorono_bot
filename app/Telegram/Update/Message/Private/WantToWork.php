@@ -11,6 +11,7 @@ use App\Enums\Method;
 use App\Models\BotUser;
 use App\Models\Survey;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
+use App\Modules\Telegram\Facades\Request;
 use App\Telegram\BackAction;
 use App\Telegram\BaseAction;
 use App\Telegram\Keyboard;
@@ -83,6 +84,8 @@ class WantToWork extends BaseAction
             __('So\'rovnomada qatnashganingiz uchun raxmat'),
             reply_markup: Keyboard::remove()
         );
+
+        SendMainMessage::send($this->from_id, $this->chat_id);
     }
 
     public function getJobOtherFinish(): void
@@ -98,6 +101,6 @@ class WantToWork extends BaseAction
 
         $this->action->clear();
 
-        $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'));
+        SendMainMessage::send($this->from_id, $this->chat_id);
     }
 }

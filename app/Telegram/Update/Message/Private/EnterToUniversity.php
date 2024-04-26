@@ -130,6 +130,7 @@ class EnterToUniversity extends BaseAction
         $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'),
             reply_markup: Keyboard::remove());
 
+        SendMainMessage::send($this->from_id, $this->chat_id);
     }
 
     public function getUniversityOtherFinishSurveyRequest(): void
@@ -146,5 +147,7 @@ class EnterToUniversity extends BaseAction
         $this->action->clear();
 
         $this->message->sendMessage(__('So\'rovnomada qatnashganingiz uchun raxmat'));
+
+        SendMainMessage::send($this->from_id, $this->chat_id);
     }
 }
