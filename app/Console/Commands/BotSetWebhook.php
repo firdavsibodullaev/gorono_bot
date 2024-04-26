@@ -12,7 +12,9 @@ class BotSetWebhook extends Command
      *
      * @var string
      */
-    protected $signature = 'app:bot-set-webhook {--secret_token= : Секретный ключ для телеграм бота}';
+    protected $signature = 'app:bot-set-webhook
+                            {--secret_token= : Секретный ключ для телеграм бота}
+                            {--remove= : Удаление вебхука}';
 
     /**
      * The console command description.
@@ -26,11 +28,18 @@ class BotSetWebhook extends Command
      */
     public function handle(): void
     {
-        $url = $this->getUrl();
 
         $secret_token = $this->option('secret_token');
 
-        Request::setWebhook($url, secret_token: $secret_token);
+        $delete = (bool)$this->option('remove');
+
+        $url = !$delete ? $this->getUrl() : "";
+
+        $response = Request::setWebhook($url, secret_token: $secret_token);
+
+        $response->ok
+            ? $this->components->info($response->description)
+            : $this->components->error($response->description);
     }
 
     private function getUrl(): string

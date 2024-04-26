@@ -7,9 +7,11 @@ use App\Modules\Telegram\DTOs\Request\GetUpdatesDTO;
 use App\Modules\Telegram\DTOs\Request\SendMessageDTO;
 use App\Modules\Telegram\DTOs\Request\SetWebhookDTO;
 use App\Modules\Telegram\DTOs\Response\EditMessageDTO as EditMessageResponseDTO;
+use App\Modules\Telegram\DTOs\Response\ErrorResponseDTO;
 use App\Modules\Telegram\DTOs\Response\GetUpdatesDTO as GetUpdatesResponseDTO;
 use App\Modules\Telegram\DTOs\Response\SendMessageDTO as SendMessageResponseDTO;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
+use App\Modules\Telegram\DTOs\Response\WebhookDTO;
 use App\Modules\Telegram\Enums\Method;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request as FacadeRequest;
@@ -43,6 +45,9 @@ class Request
         return UpdateDTO::fromArray($request->all());
     }
 
+    /**
+     * @throws ConnectionException
+     */
     public function setWebhook(
         string        $url,
         ?UploadedFile $certificate = null,
@@ -51,11 +56,15 @@ class Request
         ?array        $allowed_updates = null,
         bool          $drop_pending_updates = false,
         ?string       $secret_token = null
-    )
+    ): WebhookDTO|ErrorResponseDTO
     {
         $payload = new SetWebhookDTO($url, $certificate, $ip_address, $max_connections, $allowed_updates, $drop_pending_updates, $secret_token);
 
         $response = $this->api->send(Method::SetWebhook, $payload);
+
+        return $response['ok']
+            ? WebhookDTO::fromArray($response)
+            : ERrorResponseDTO::fromArray($response);
     }
 
     public function sendMessage(
