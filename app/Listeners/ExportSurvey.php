@@ -28,6 +28,7 @@ class ExportSurvey
     public function handle(HandleExports $event): void
     {
         $surveys = Survey::query()
+            ->orderBy('id')
             ->where('is_finished', '=', true)
             ->with(['botUser.district', 'botUser.school'])
             ->get();

@@ -28,6 +28,7 @@ class ExportBotUser
     public function handle(HandleExports $event): void
     {
         $users = BotUser::query()
+            ->orderBy('id')
             ->where('is_registered', '=', true)
             ->with(['district', 'school', 'university'])
             ->get();
