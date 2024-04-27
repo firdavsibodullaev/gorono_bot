@@ -35,11 +35,7 @@ class Registration extends BaseAction
 
     public function sendLanguage(): void
     {
-        Request::sendMessage($this->chat_id, __('Tilni tanlang'), reply_markup: json_encode([
-            'keyboard' => Keyboard::languages(),
-            'resize_keyboard' => true,
-            'one_time_keyboard' => false,
-        ]));
+        Request::sendMessage($this->chat_id, __('Tilni tanlang'), reply_markup: Keyboard::languages());
 
         $this->action->set(self::class, Method::GetLanguageSendNameRequest);
     }
@@ -94,10 +90,7 @@ class Registration extends BaseAction
             $this->user->update(['birthdate' => Carbon::createFromFormat('d.m.Y', $this->text)]);
         }
 
-        Request::sendMessage($this->chat_id, __('Telefon raqamingizni kiriting'), reply_markup: json_encode([
-            'keyboard' => Keyboard::sharePhone(),
-            'resize_keyboard' => true,
-        ]));
+        Request::sendMessage($this->chat_id, __('Telefon raqamingizni kiriting'), reply_markup: Keyboard::sharePhone());
 
         $this->action->set(self::class, Method::GetPhoneSendTypeRequest);
     }
@@ -107,10 +100,10 @@ class Registration extends BaseAction
         if (!$is_back) {
             BackAction::back($this->text, $this->user, fn() => $this->getNameSendBirthdateRequest(true));
             if (!$this->message->contact && !str($this->text)->isMatch('/^\+998-\d{2}-\d{3}(-\d{2}){2}/')) {
-                $this->message->sendMessage(__('Telefon raqamingizni kiriting'), reply_markup: json_encode([
-                    'keyboard' => Keyboard::sharePhone(),
-                    'resize_keyboard' => true,
-                ]));
+                $this->message->sendMessage(
+                    __('Telefon raqamingizni kiriting'),
+                    reply_markup: Keyboard::sharePhone()
+                );
                 return;
             }
 
@@ -154,10 +147,7 @@ class Registration extends BaseAction
         if (!$district) {
             $user = BotUserByFromIdChatIdAction::fromIds($this->from_id, $this->chat_id)->run();
 
-            Request::sendMessage($this->chat_id, __('Tumaningizni tanlang'), reply_markup: json_encode([
-                'keyboard' => Keyboard::districts($user->language),
-                'resize_keyboard' => true,
-            ]));
+            Request::sendMessage($this->chat_id, __('Tumaningizni tanlang'), reply_markup: Keyboard::districts($user->language));
             return;
         }
 

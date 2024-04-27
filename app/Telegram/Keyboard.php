@@ -38,30 +38,37 @@ class Keyboard
         return json_encode(['remove_keyboard' => true]);
     }
 
-    public static function languages(): array
+    public static function languages(): string
     {
-        return [
-            [
+        return json_encode([
+            'keyboard' => [
                 [
-                    'text' => __('uz')
-                ],
-                [
-                    'text' => __('ru')
-                ],
-            ]
-        ];
+                    [
+                        'text' => __('uz')
+                    ],
+                    [
+                        'text' => __('ru')
+                    ],
+                ]
+            ],
+            'resize_keyboard' => true,
+            'one_time_keyboard' => false,
+        ]);
     }
 
-    public static function sharePhone(): array
+    public static function sharePhone(): string
     {
-        return [
-            [
-                ['text' => __('Telefon raqamini ulashish'), 'request_contact' => true]
+        return json_encode([
+            'keyboard' => [
+                [
+                    ['text' => __('Telefon raqamini ulashish'), 'request_contact' => true]
+                ],
+                [
+                    ['text' => BackButton::Back->text()]
+                ],
             ],
-            [
-                ['text' => BackButton::Back->text()]
-            ],
-        ];
+            'resize_keyboard' => true,
+        ]);
     }
 
     public static function districts(Language $language): string
@@ -160,24 +167,27 @@ class Keyboard
         ]);
     }
 
-    public static function jobTypesList(): array
+    public static function jobTypesList(): string
     {
-        return [
-            [
-                ['text' => JobType::Service->text()],
-                ['text' => JobType::Manufacture->text()],
+        return json_encode([
+            'keyboard' => [
+                [
+                    ['text' => JobType::Service->text()],
+                    ['text' => JobType::Manufacture->text()],
+                ],
+                [
+                    ['text' => JobType::Business->text()],
+                    ['text' => JobType::Abroad->text()],
+                ],
+                [
+                    ['text' => JobType::Other->text()],
+                ],
+                [
+                    ['text' => JobType::Back->text()],
+                ],
             ],
-            [
-                ['text' => JobType::Business->text()],
-                ['text' => JobType::Abroad->text()],
-            ],
-            [
-                ['text' => JobType::Other->text()],
-            ],
-            [
-                ['text' => JobType::Back->text()],
-            ],
-        ];
+            'resize_keyboard' => true,
+        ]);
     }
 
     public static function professionTypesList(): string

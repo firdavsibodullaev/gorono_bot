@@ -35,10 +35,7 @@ class WantToWork extends BaseAction
     {
         $this->message->sendMessage(
             text: __('Qaysi sohada ishlamoqchisiz?'),
-            reply_markup: json_encode([
-                'keyboard' => Keyboard::jobTypesList(),
-                'resize_keyboard' => true,
-            ])
+            reply_markup: Keyboard::jobTypesList()
         );
 
         if (!$is_back) {
@@ -60,10 +57,7 @@ class WantToWork extends BaseAction
         if (!$method) {
             $this->message->sendMessage(
                 text: __('Qaysi sohada ishlamoqchisiz?'),
-                reply_markup: json_encode([
-                    'keyboard' => Keyboard::jobTypesList(),
-                    'resize_keyboard' => true,
-                ])
+                reply_markup: Keyboard::jobTypesList()
             );
 
             return;
