@@ -33,5 +33,6 @@ return [
 
     'telegram' => [
         'token' => env('TELEGRAM_BOT_TOKEN'),
+        'admin' => json_decode(env('TELEGRAM_BOT_ADMIN', '[]')) ?? []
     ]
 ];

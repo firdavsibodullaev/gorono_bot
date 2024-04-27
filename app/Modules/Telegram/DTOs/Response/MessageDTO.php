@@ -7,14 +7,15 @@ use App\Modules\Telegram\Facades\Request;
 class MessageDTO
 {
     public function __construct(
-        public int         $message_id,
-        public FromDTO     $from,
-        public ChatDTO     $chat,
-        public int         $date,
-        public ?MessageDTO $reply_to_message = null,
-        public ?ContactDTO $contact = null,
-        public ?string     $text = null,
-        public ?string     $caption = null
+        public int          $message_id,
+        public FromDTO      $from,
+        public ChatDTO      $chat,
+        public int          $date,
+        public ?MessageDTO  $reply_to_message = null,
+        public ?ContactDTO  $contact = null,
+        public ?string      $text = null,
+        public ?string      $caption = null,
+        public ?DocumentDTO $document = null,
     )
     {
     }
@@ -23,6 +24,9 @@ class MessageDTO
     {
         $has_contact = isset($message['contact']);
         $has_reply_to_message = isset($message['reply_to_message']);
+
+        $has_document = isset($message['document']);
+
         return new static(
             message_id: $message['message_id'],
             from: FromDTO::fromArray($message['from']),
@@ -32,6 +36,7 @@ class MessageDTO
             contact: $has_contact ? ContactDTO::fromArray($message['contact']) : null,
             text: $message['text'] ?? null,
             caption: $message['caption'] ?? null,
+            document: $has_document ? DocumentDTO::fromArray($message['document']) : null
         );
     }
 

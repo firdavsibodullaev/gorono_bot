@@ -2,26 +2,26 @@
 
 namespace App\Exports;
 
-use App\Models\Survey;
+use App\Models\BotUser;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromView;
 
-class SchoolExport implements FromView
+class BotUserExport implements FromView
 {
     use Exportable;
 
-    private Collection $surveys;
+    private Collection $bot_users;
 
     public function __construct(Collection $collection)
     {
-        $collection->ensure(Survey::class);
-        $this->surveys = $collection;
+        $collection->ensure(BotUser::class);
+        $this->bot_users = $collection;
     }
 
     public function view(): View
     {
-        return view('excel.export-survey', ['surveys' => $this->surveys]);
+        return view('excel.bot-user-export', ['bot_users' => $this->bot_users]);
     }
 }

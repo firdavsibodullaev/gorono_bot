@@ -35,5 +35,14 @@ class AppServiceProvider extends ServiceProvider
 
             return false;
         });
+
+        $this->loadHelpers();
+    }
+
+    private function loadHelpers(): void
+    {
+        foreach (glob(__DIR__ . '/../Support/*.php') as $filename) {
+            require_once $filename;
+        }
     }
 }

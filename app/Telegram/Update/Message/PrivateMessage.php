@@ -87,6 +87,12 @@ class PrivateMessage extends BaseUpdate
             $commands[] = '/tozalash';
         }
 
+        $admins = config('services.telegram.admin');
+
+        if (in_array($this->message->from->id, $admins)) {
+            $commands[] = '/export';
+        }
+
         return in_array($this->text, $commands);
     }
 

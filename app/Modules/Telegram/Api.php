@@ -3,10 +3,12 @@
 namespace App\Modules\Telegram;
 
 use App\Modules\Telegram\DTOs\Request\BaseDTO;
+use App\Modules\Telegram\DTOs\Request\BaseFileDTO;
 use App\Modules\Telegram\Enums\Method;
 use App\Modules\Telegram\Exceptions\TelegramTokenNotExist;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Context;
 use Illuminate\Support\Facades\Http;
 
@@ -59,9 +61,38 @@ class Api
         return $request->json();
     }
 
-    protected function getClient(bool $is_file = false): PendingRequest
+    /**
+     * @throws ConnectionException
+     */
+    public function sendFile(Method $method, BaseFileDTO $dto): array
     {
-        return Http::baseUrl($this->base_url)
-            ->withHeader('Content-Type', $is_file ? 'application/json' : 'multipart/form-data');
+        $payload = $dto->toArray();
+
+        if ($dto->file instanceof UploadedFile) {
+            $file_type = $method->fileType();
+            unset($payload[$file_type]);
+
+            $request = $this->getClient()
+                ->attach($file_type, $dto->file->getContent(), $dto->file->getClientOriginalName())
+                ->post($method->value, $payload);
+        } else {
+            $request = $this->getClient()
+                ->get($method->value, $payload);
+        }
+
+        Context::add([
+            'telegram-request-payload' => [
+                'method' => $method->value,
+                'params' => $dto->toArray()
+            ],
+            'telegram-response' => $request->json() ?? $request->body()
+        ]);
+
+        return $request->json();
+    }
+
+    protected function getClient(): PendingRequest
+    {
+        return Http::baseUrl($this->base_url);
     }
 }

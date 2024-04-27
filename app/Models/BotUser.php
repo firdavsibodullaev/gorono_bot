@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Log;
 
 /**
  * @property-read int $id
@@ -32,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property-read District $district
  * @property-read School $school
  * @property-read University $university
+ * @property-read string $phone_formatted
  */
 class BotUser extends Model
 {
@@ -88,5 +90,20 @@ class BotUser extends Model
         $this->load(['surveys' => fn(HasMany $hasMany) => $hasMany->where('is_finished', true)]);
 
         return Attribute::get(fn() => $this->surveys->isNotEmpty());
+    }
+
+    public function phoneFormatted(): Attribute
+    {
+        try {
+            return Attribute::get(fn() => sprintf("+%d%d%d%d%d-%d%d%d-%d%d-%d%d", ...str_split($this->phone)));
+        } catch (\Throwable $e) {
+
+            Log::channel('daily')->warning("Неверный номер телефона $this->id", [
+                'phone' => $this->phone,
+                'error' => $e->getMessage(),
+            ]);
+
+            return Attribute::get(fn() => $this->phone);
+        }
     }
 }

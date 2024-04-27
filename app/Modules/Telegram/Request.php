@@ -2,16 +2,20 @@
 
 namespace App\Modules\Telegram;
 
+use App\Modules\Telegram\DTOs\Request\ChatActionDTO;
 use App\Modules\Telegram\DTOs\Request\EditMessageDTO;
 use App\Modules\Telegram\DTOs\Request\GetUpdatesDTO;
+use App\Modules\Telegram\DTOs\Request\SendDocumentDTO;
 use App\Modules\Telegram\DTOs\Request\SendMessageDTO;
 use App\Modules\Telegram\DTOs\Request\SetWebhookDTO;
 use App\Modules\Telegram\DTOs\Response\EditMessageDTO as EditMessageResponseDTO;
 use App\Modules\Telegram\DTOs\Response\ErrorResponseDTO;
 use App\Modules\Telegram\DTOs\Response\GetUpdatesDTO as GetUpdatesResponseDTO;
 use App\Modules\Telegram\DTOs\Response\SendMessageDTO as SendMessageResponseDTO;
+use App\Modules\Telegram\DTOs\Response\SuccessEmptyDTO;
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
 use App\Modules\Telegram\DTOs\Response\WebhookDTO;
+use App\Modules\Telegram\Enums\ChatAction;
 use App\Modules\Telegram\Enums\Method;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request as FacadeRequest;
@@ -86,6 +90,40 @@ class Request
         $response = $this->api->send(Method::SendMessage, $payload);
 
         return SendMessageResponseDTO::fromArray($response);
+    }
+
+    public function sendDocument(
+        int                      $chat_id,
+        UploadedFile|string      $document,
+        UploadedFile|string|null $thumbnail = null,
+        ?string                  $caption = null,
+        string                   $parse_mode = 'html',
+        ?string                  $reply_markup = null,
+        array                    $reply_parameters = [],
+    ): SendMessageResponseDTO
+    {
+        $payload = new SendDocumentDTO(
+            chat_id: $chat_id,
+            document: $document,
+            thumbnail: $thumbnail,
+            caption: $caption,
+            parse_mode: $parse_mode,
+            reply_markup: $reply_markup,
+            reply_parameters: $reply_parameters
+        );
+
+        $response = $this->api->sendFile(Method::SendDocument, $payload);
+
+        return SendMessageResponseDTO::fromArray($response);
+    }
+
+    public function sendChatAction(int $chat_id, ChatAction $action): SuccessEmptyDTO
+    {
+        $payload = new ChatActionDTO($chat_id, $action);
+
+        $response = $this->api->send(Method::SendChatAction, $payload);
+
+        return new SuccessEmptyDTO(...$response);
     }
 
     /**

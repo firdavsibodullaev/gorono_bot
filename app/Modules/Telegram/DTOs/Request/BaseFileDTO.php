@@ -2,11 +2,13 @@
 
 namespace App\Modules\Telegram\DTOs\Request;
 
-use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Http\UploadedFile;
 
-abstract class BaseDTO implements \JsonSerializable, \ArrayAccess, Arrayable
+abstract class BaseFileDTO extends BaseDTO
 {
     protected array $container = [];
+
+    public UploadedFile|string $file;
 
     public function offsetExists($offset): bool
     {
@@ -35,8 +37,6 @@ abstract class BaseDTO implements \JsonSerializable, \ArrayAccess, Arrayable
 
     public function toArray(): array
     {
-        return array_map(
-            callback: fn($param) => is_enum($param) ? $param->value : $param,
-            array: array_filter($this->container));
+        return array_filter($this->container);
     }
 }
