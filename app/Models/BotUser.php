@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Context;
 
 /**
  * @property-read int $id
@@ -98,7 +98,8 @@ class BotUser extends Model
             return Attribute::get(fn() => sprintf("+%d%d%d%d%d-%d%d%d-%d%d-%d%d", ...str_split($this->phone)));
         } catch (\ArgumentCountError $e) {
 
-            Log::channel('daily')->warning("Неверный номер телефона $this->id", [
+            Context::add([
+                'id' => $this->id,
                 'phone' => $this->phone,
                 'error' => $e->getMessage(),
             ]);
