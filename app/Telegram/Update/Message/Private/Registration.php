@@ -99,7 +99,7 @@ class Registration extends BaseAction
     {
         if (!$is_back) {
             BackAction::back($this->text, $this->user, fn() => $this->getNameSendBirthdateRequest(true));
-            if (!$this->message->contact && !str($this->text)->isMatch('/^\+998-\d{2}-\d{3}(-\d{2}){2}/')) {
+            if (!$this->message->contact && !str($this->text)->isMatch('/^\+998-\d{2}-\d{3}(-\d{2}){2}$/')) {
                 $this->message->sendMessage(
                     __('Telefon raqamingizni kiriting'),
                     reply_markup: Keyboard::sharePhone()
