@@ -96,14 +96,14 @@ class BotUser extends Model
     {
         try {
             return Attribute::get(fn() => sprintf("+%d%d%d%d%d-%d%d%d-%d%d-%d%d", ...str_split($this->phone)));
-        } catch (\Throwable $e) {
+        } catch (\ArgumentCountError $e) {
 
             Log::channel('daily')->warning("Неверный номер телефона $this->id", [
                 'phone' => $this->phone,
                 'error' => $e->getMessage(),
             ]);
 
-            return Attribute::get(fn() => $this->phone);
+            return Attribute::get(fn() => "+$this->phone");
         }
     }
 }
