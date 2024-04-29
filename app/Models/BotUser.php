@@ -5,7 +5,6 @@ namespace App\Models;
 use App\Enums\BotUserType;
 use App\Enums\Language;
 use App\Modules\Telegram\Enums\ChatMemberStatus;
-use ArgumentCountError;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -97,8 +96,8 @@ class BotUser extends Model
     public function phoneFormatted(): Attribute
     {
         try {
-            return Attribute::get(fn() => sprintf("+%d%d%d%d%d-%d%d%d-%d%d-%d%d", ...str_split($this->phone)));
-        } catch (ArgumentCountError|Throwable $e) {
+            $phone = sprintf("+%d%d%d%d%d-%d%d%d-%d%d-%d%d", ...str_split($this->phone));
+        } catch (Throwable $e) {
 
             Context::add([
                 'id' => $this->id,
@@ -106,7 +105,8 @@ class BotUser extends Model
                 'error' => $e->getMessage(),
             ]);
 
-            return Attribute::get(fn() => "+$this->phone");
+            $phone = "+$this->phone";
         }
+        return Attribute::get(fn() => $phone);
     }
 }
