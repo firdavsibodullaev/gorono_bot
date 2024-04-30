@@ -40,22 +40,27 @@ class SendPostToBotUsersJob implements ShouldQueue
             ->with(['botUser', 'postMessage.creator'])
             ->lazy(100)
             ->each(function (BotUserPostMessage $postMessage, int $key) {
+                loop:
                 $post = $postMessage->postMessage;
                 $botUser = $postMessage->botUser;
 
-                if (is_null($post->file_ids)) {
-                    $message = Request::sendMessage($botUser->chat_id, $post->text, reply_markup: Keyboard::postMessageApprove());
-                } elseif ($post->file_ids['type'] == 'photo') {
-                    $message = Request::sendPhoto(
-                        $botUser->chat_id,
-                        $post->file_ids['file_id'],
-                        $post->text,
-                        null,
-                        $post->entities,
-                        reply_markup: Keyboard::postMessageApprove()
-                    );
-                } else {
-                    return;
+                try {
+                    if (is_null($post->file_ids)) {
+                        $message = Request::sendMessage($botUser->chat_id, $post->text, reply_markup: Keyboard::postMessageApprove());
+                    } elseif ($post->file_ids['type'] == 'photo') {
+                        $message = Request::sendPhoto(
+                            $botUser->chat_id,
+                            $post->file_ids['file_id'],
+                            $post->text,
+                            null,
+                            $post->entities,
+                            reply_markup: Keyboard::postMessageApprove()
+                        );
+                    } else {
+                        return;
+                    }
+                } catch (BadRequestException) {
+                    goto loop;
                 }
 
                 $postMessage->update(['is_sent' => true, 'sent_at' => now(), 'message_id' => $message->result->message_id]);
