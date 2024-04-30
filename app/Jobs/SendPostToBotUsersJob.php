@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\BotUserPostMessage;
 use App\Models\PostMessage;
+use App\Modules\Telegram\Enums\ChatMemberStatus;
 use App\Modules\Telegram\Exceptions\BadRequestException;
 use App\Modules\Telegram\Facades\Request;
 use App\Telegram\Keyboard;
@@ -61,6 +62,11 @@ class SendPostToBotUsersJob implements ShouldQueue
                     }
                 } catch (BadRequestException $e) {
                     report($e);
+                    sleep(2);
+                    if ($e->getMessage() === 'Forbidden: user is deactivated') {
+                        $botUser->update(['status' => ChatMemberStatus::Kicked]);
+                        return;
+                    }
                     goto loop;
                 }
 
@@ -79,7 +85,7 @@ class SendPostToBotUsersJob implements ShouldQueue
                     $post->update(['is_sent' => true]);
 
                     if ($key % 10 === 0 && $key !== 0) {
-                        sleep(1);
+                        sleep(2);
                     }
                 }
             });
@@ -103,7 +109,7 @@ class SendPostToBotUsersJob implements ShouldQueue
             Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, "$sent_count/$all_count\n\n$percent%");
         } catch (BadRequestException $e) {
             report($e);
-            sleep(1);
+            sleep(2);
         }
     }
 }
