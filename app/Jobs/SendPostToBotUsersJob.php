@@ -65,13 +65,13 @@ class SendPostToBotUsersJob implements ShouldQueue
                     report($e);
                     if (in_array($e->getMessage(), ['Forbidden: user is deactivated', 'Forbidden: bot was blocked by the user'])) {
                         $botUser->update(['status' => ChatMemberStatus::Kicked]);
-                        return;
                     } elseif ($e->getCode() === 429) {
                         $sleepTime = (int)str($e->getMessage())->remove("Too Many Requests: retry after ")->toString();
                         sleep($sleepTime);
+                        goto loop;
                     }
                     sleep(2);
-                    goto loop;
+                    return;
                 }
 
                 $postMessage->update(['is_sent' => true, 'sent_at' => now(), 'message_id' => $message->result->message_id]);
