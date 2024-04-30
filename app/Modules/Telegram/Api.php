@@ -71,6 +71,7 @@ class Api
 
     /**
      * @throws ConnectionException
+     * @throws BadRequestException
      */
     public function sendFile(Method $method, BaseFileDTO $dto): array
     {
@@ -96,7 +97,13 @@ class Api
             'telegram-response' => $request->json() ?? $request->body()
         ]);
 
-        return $request->json();
+        $response = $request->json();
+
+        if ($response['ok'] === false) {
+            throw new BadRequestException($response['description'], $response['error_code']);
+        }
+
+        return $response;
     }
 
     protected function getClient(): PendingRequest
