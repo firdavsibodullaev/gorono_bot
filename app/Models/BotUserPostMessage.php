@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Modules\Telegram\Enums\ChatMemberStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -23,7 +24,9 @@ class BotUserPostMessage extends Pivot
 
     public function botUser(): BelongsTo
     {
-        return $this->belongsTo(BotUser::class);
+        return $this->belongsTo(BotUser::class)
+            ->where('status', ChatMemberStatus::Member)
+            ->where('is_registered', true);
     }
 
     public function postMessage(): BelongsTo
