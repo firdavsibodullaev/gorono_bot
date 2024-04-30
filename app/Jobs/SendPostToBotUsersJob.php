@@ -59,7 +59,8 @@ class SendPostToBotUsersJob implements ShouldQueue
                     } else {
                         return;
                     }
-                } catch (BadRequestException) {
+                } catch (BadRequestException $e) {
+                    report($e);
                     goto loop;
                 }
 
@@ -100,7 +101,8 @@ class SendPostToBotUsersJob implements ShouldQueue
 
         try {
             Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, "$sent_count/$all_count\n\n$percent%");
-        } catch (BadRequestException) {
+        } catch (BadRequestException $e) {
+            report($e);
             sleep(1);
         }
     }
