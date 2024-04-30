@@ -82,18 +82,31 @@ class PrivateMessage extends BaseUpdate
     private function isCommand(): bool
     {
         $commands = ['/start'];
+        $commands = $this->getDevelopmentCommands($commands);
+        $commands = $this->getAdminCommands($commands);
 
+        return in_array($this->text, $commands);
+    }
+
+    private function getDevelopmentCommands(array $commands): array
+    {
         if (app()->isLocal()) {
             $commands[] = '/tozalash';
         }
 
+        return $commands;
+    }
+
+    private function getAdminCommands(array $commands): array
+    {
         $admins = config('services.telegram.admin');
 
         if (in_array($this->message->from->id, $admins)) {
             $commands[] = '/export';
+            $commands[] = '/post';
         }
 
-        return in_array($this->text, $commands);
+        return $commands;
     }
 
     private function getMainMessage(): AfterSchoolGoal|false

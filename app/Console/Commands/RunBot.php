@@ -36,6 +36,8 @@ class RunBot extends Command
     {
         $this->components->info("Bot started...");
 
+        $this->notifyAboutBotStart();
+
         $updates = retry(3, fn() => Request::getUpdates());
 
         $update_id = $updates->result->last()?->update_id;
@@ -75,5 +77,15 @@ class RunBot extends Command
         if ($this->requests_count % 10 == 0) {
             sleep(1);
         }
+    }
+
+    private function notifyAboutBotStart(): void
+    {
+        $admins = config('services.telegram.admin');
+
+        foreach ($admins as $chat_id) {
+            Request::sendMessage($chat_id, "Bot ishga tushdi\n\nVaqt: " . date('Y-m-d H:i:s'));
+        }
+
     }
 }

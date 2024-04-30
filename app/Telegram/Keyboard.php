@@ -254,4 +254,19 @@ class Keyboard
             'resize_keyboard' => true
         ]);
     }
+
+    public static function postMessageApprove(): string
+    {
+        return json_encode([
+            'keyboard' => [
+                [
+                    ['text' => __('Tasdiqlash')]
+                ],
+                [
+                    ['text' => BackButton::Back->text()]
+                ],
+            ],
+            'resize_keyboard' => true
+        ]);
+    }
 }

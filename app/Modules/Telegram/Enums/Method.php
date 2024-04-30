@@ -14,4 +14,5 @@ enum Method: string
     case SetWebhook = 'setWebhook';
     case SendDocument = 'sendDocument';
     case SendChatAction = 'sendChatAction';
+    case SendPhoto = 'sendPhoto';
 }

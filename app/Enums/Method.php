@@ -26,4 +26,6 @@ enum Method: string
     case GetOneStepAnswerAndFinish = 'getOneStepAnswerAndFinish';
     case GetOneStepOtherAnswerAndFinish = 'getOneStepOtherAnswerAndFinish';
     case GetUniversityFinishRegistrationRequest = 'getUniversityFinishRegistrationRequest';
+    case GetPostMessage = 'getPostMessage';
+    case ApprovePostMessage = 'approvePostMessage';
 }

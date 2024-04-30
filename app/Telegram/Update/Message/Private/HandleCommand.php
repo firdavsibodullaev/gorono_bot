@@ -4,6 +4,7 @@ namespace App\Telegram\Update\Message\Private;
 
 use App\Modules\Telegram\DTOs\Response\UpdateDTO;
 use App\Telegram\Commands\Export;
+use App\Telegram\Commands\Post;
 use App\Telegram\Commands\Start;
 use App\Telegram\Commands\Tozalash;
 use App\Telegram\Update\BaseUpdate;
@@ -27,7 +28,8 @@ class HandleCommand extends BaseUpdate
         $commandClass = match ($this->command) {
             'start' => new Start($this->update->message),
             'tozalash' => new Tozalash($this->update->message),
-            'export' => new Export($this->update->message)
+            'export' => new Export($this->update->message),
+            'post' => new Post($this->update->message)
         };
 
         $commandClass();

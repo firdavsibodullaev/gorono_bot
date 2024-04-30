@@ -7,8 +7,8 @@ use App\Modules\Telegram\DTOs\Request\EditMessageDTO;
 use App\Modules\Telegram\DTOs\Request\GetUpdatesDTO;
 use App\Modules\Telegram\DTOs\Request\SendDocumentDTO;
 use App\Modules\Telegram\DTOs\Request\SendMessageDTO;
+use App\Modules\Telegram\DTOs\Request\SendPhotoDTO;
 use App\Modules\Telegram\DTOs\Request\SetWebhookDTO;
-use App\Modules\Telegram\DTOs\Response\EditMessageDTO as EditMessageResponseDTO;
 use App\Modules\Telegram\DTOs\Response\ErrorResponseDTO;
 use App\Modules\Telegram\DTOs\Response\GetUpdatesDTO as GetUpdatesResponseDTO;
 use App\Modules\Telegram\DTOs\Response\SendMessageDTO as SendMessageResponseDTO;
@@ -17,6 +17,7 @@ use App\Modules\Telegram\DTOs\Response\UpdateDTO;
 use App\Modules\Telegram\DTOs\Response\WebhookDTO;
 use App\Modules\Telegram\Enums\ChatAction;
 use App\Modules\Telegram\Enums\Method;
+use App\Modules\Telegram\Exceptions\BadRequestException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request as FacadeRequest;
 use Illuminate\Http\UploadedFile;
@@ -92,6 +93,34 @@ class Request
         return SendMessageResponseDTO::fromArray($response);
     }
 
+    /**
+     * @throws ConnectionException
+     */
+    public function sendPhoto(
+        int                 $chat_id,
+        UploadedFile|string $photo,
+        string|null         $caption,
+        ?string             $parse_mode = 'html',
+        ?array              $caption_entities = null,
+        ?string             $reply_markup = null,
+        array               $reply_parameters = []
+    ): SendMessageResponseDTO
+    {
+        $payload = new SendPhotoDTO(
+            chat_id: $chat_id,
+            photo: $photo,
+            caption: $caption,
+            parse_mode: $parse_mode,
+            caption_entities: $caption_entities ? json_encode($caption_entities) : null,
+            reply_markup: $reply_markup,
+            reply_parameters: $reply_parameters
+        );
+
+        $response = $this->api->sendFile(Method::SendPhoto, $payload);
+
+        return SendMessageResponseDTO::fromArray($response);
+    }
+
     public function sendDocument(
         int                      $chat_id,
         UploadedFile|string      $document,
@@ -128,6 +157,7 @@ class Request
 
     /**
      * @throws ConnectionException
+     * @throws BadRequestException
      */
     public function editMessageText(
         int     $chat_id,
@@ -135,7 +165,7 @@ class Request
         string  $text,
         string  $parse_mode = 'html',
         ?string $reply_markup = null
-    ): EditMessageResponseDTO
+    ): SendMessageResponseDTO|ErrorResponseDTO
     {
         $payload = new EditMessageDTO(
             chat_id: $chat_id,
@@ -147,6 +177,10 @@ class Request
 
         $response = $this->api->send(Method::EditMessageText, $payload);
 
-        return EditMessageResponseDTO::fromArray($response);
+        if ($response['ok'] === false) {
+            throw new BadRequestException($response['description'], $response['error_code']);
+        }
+
+        return SendMessageResponseDTO::fromArray($response);
     }
 }

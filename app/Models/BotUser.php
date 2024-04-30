@@ -6,6 +6,7 @@ use App\Enums\BotUserType;
 use App\Enums\Language;
 use App\Modules\Telegram\Enums\ChatMemberStatus;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -54,6 +55,11 @@ class BotUser extends Model
         'language',
         'is_registered',
     ];
+
+    public static function member(): Builder
+    {
+        return static::query()->where('status', ChatMemberStatus::Member);
+    }
 
     protected function casts(): array
     {
