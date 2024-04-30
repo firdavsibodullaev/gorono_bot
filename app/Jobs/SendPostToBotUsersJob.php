@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use App\Models\BotUserPostMessage;
 use App\Models\PostMessage;
+use App\Modules\Telegram\Exceptions\BadRequestException;
 use App\Modules\Telegram\Facades\Request;
 use App\Telegram\Keyboard;
 use Illuminate\Bus\Queueable;
@@ -88,7 +89,10 @@ class SendPostToBotUsersJob implements ShouldQueue
 
         $percent = (int)round($sent_count / $all_count * 100);
 
+        try {
+            Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, "$percent%");
+        } catch (BadRequestException) {
 
-        Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, "$percent%");
+        }
     }
 }

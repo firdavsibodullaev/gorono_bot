@@ -27,6 +27,6 @@ class Post
     {
         Action::make($this->from_id, $this->chat_id)->set(PostMessage::class, Method::GetPostMessage);
 
-        $this->message->sendMessage(__('Habarni kiriting'), reply_markup: Keyboard::back());
+        $this->message->sendMessage(__('Xabarni kiriting'), reply_markup: Keyboard::back());
     }
 }
