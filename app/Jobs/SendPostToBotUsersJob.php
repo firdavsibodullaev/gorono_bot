@@ -39,6 +39,7 @@ class SendPostToBotUsersJob implements ShouldQueue
         BotUserPostMessage::query()
             ->where('post_message_id', $this->post_id)
             ->where('is_sent', false)
+            ->whereHas('botUser')
             ->with(['botUser', 'postMessage.creator'])
             ->lazy(100)
             ->each(function (BotUserPostMessage $postMessage, int $key) use (&$start_time) {
