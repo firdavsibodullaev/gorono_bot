@@ -35,12 +35,13 @@ class SendPostToBotUsersJob implements ShouldQueue
      */
     public function handle(): void
     {
+        $start_time = now();
         BotUserPostMessage::query()
             ->where('post_message_id', $this->post_id)
             ->where('is_sent', false)
             ->with(['botUser', 'postMessage.creator'])
             ->lazy(100)
-            ->each(function (BotUserPostMessage $postMessage, int $key) {
+            ->each(function (BotUserPostMessage $postMessage, int $key) use (&$start_time) {
                 loop:
                 $post = $postMessage->postMessage;
                 $botUser = $postMessage->botUser;
@@ -87,7 +88,8 @@ class SendPostToBotUsersJob implements ShouldQueue
 
                     $post->update(['is_sent' => true]);
 
-                    if ($key % 10 === 0 && $key !== 0) {
+                    if ($key % 10 === 0 && $key !== 0 || $start_time->diffInSeconds(now()) >= 60) {
+                        $start_time = now();
                         sleep(2);
                     }
                 }
