@@ -28,7 +28,7 @@ class ResendNotSentPost extends Command
     public function handle()
     {
         PostMessage::query()
-            ->where('is_is_sent', false)
+            ->where('is_sent', false)
             ->each(function (PostMessage $postMessage) {
                 SendPostToBotUsersJob::dispatch($postMessage->id);
             });
