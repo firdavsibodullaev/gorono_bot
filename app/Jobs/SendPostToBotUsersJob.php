@@ -62,11 +62,14 @@ class SendPostToBotUsersJob implements ShouldQueue
                     }
                 } catch (BadRequestException $e) {
                     report($e);
-                    sleep(2);
                     if ($e->getMessage() === 'Forbidden: user is deactivated') {
                         $botUser->update(['status' => ChatMemberStatus::Kicked]);
                         return;
+                    } elseif ($e->getCode() === 429) {
+                        $sleepTime = (int)str($e->getMessage())->remove("Too Many Requests: retry after ")->toString();
+                        sleep($sleepTime);
                     }
+                    sleep(2);
                     goto loop;
                 }
 
