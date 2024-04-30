@@ -5,6 +5,7 @@ namespace App\Modules\Telegram;
 use App\Modules\Telegram\DTOs\Request\BaseDTO;
 use App\Modules\Telegram\DTOs\Request\BaseFileDTO;
 use App\Modules\Telegram\Enums\Method;
+use App\Modules\Telegram\Exceptions\BadRequestException;
 use App\Modules\Telegram\Exceptions\TelegramTokenNotExist;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
@@ -45,6 +46,7 @@ class Api
 
     /**
      * @throws ConnectionException
+     * @throws BadRequestException
      */
     public function send(Method $method, ?BaseDTO $dto = null): array
     {
@@ -58,7 +60,13 @@ class Api
             'telegram-response' => $request->json() ?? $request->body()
         ]);
 
-        return $request->json();
+        $response = $request->json();
+
+        if ($response['ok'] === false) {
+            throw new BadRequestException($response['description'], $response['error_code']);
+        }
+
+        return $response;
     }
 
     /**

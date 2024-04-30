@@ -72,7 +72,7 @@ class SendPostToBotUsersJob implements ShouldQueue
 
                     $post->update(['is_sent' => true]);
 
-                    if ($key % 10 == 0 && $key !== 0) {
+                    if ($key % 10 === 0 && $key !== 0) {
                         sleep(1);
                     }
                 }

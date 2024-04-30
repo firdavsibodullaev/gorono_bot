@@ -177,10 +177,6 @@ class Request
 
         $response = $this->api->send(Method::EditMessageText, $payload);
 
-        if ($response['ok'] === false) {
-            throw new BadRequestException($response['description'], $response['error_code']);
-        }
-
         return SendMessageResponseDTO::fromArray($response);
     }
 }
