@@ -114,6 +114,10 @@ class SendPostToBotUsersJob implements ShouldQueue
             Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, "$sent_count/$all_count\n\n$percent%");
         } catch (BadRequestException $e) {
             report($e);
+            if ($e->getCode() === 429) {
+                $sleepTime = (int)str($e->getMessage())->remove("Too Many Requests: retry after ")->toString();
+                sleep($sleepTime);
+            }
             sleep(2);
         }
     }
