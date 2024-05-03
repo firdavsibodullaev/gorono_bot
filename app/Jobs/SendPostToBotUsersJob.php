@@ -110,9 +110,11 @@ class SendPostToBotUsersJob implements ShouldQueue
             ->count();
 
         $percent = (int)floor($sent_count / $all_count * 100);
+        $time = now()->format('d.m.Y H:i:s');
+        $progress_text = "$sent_count/$all_count\n\n$percent%\n\n\nVaqti: $time";
 
         try {
-            Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, "$sent_count/$all_count\n\n$percent%");
+            Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, $progress_text);
         } catch (BadRequestException $e) {
 
             if ($e->getMessage() === "Bad Request: message can't be edited") {
