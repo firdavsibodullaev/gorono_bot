@@ -75,10 +75,10 @@ class SendPostToBotUsersJob implements ShouldQueue
 
                 $postMessage->update(['is_sent' => true, 'sent_at' => now(), 'message_id' => $message->result->message_id]);
 
-                $this->sendProgressToCreator($postMessage);
 
                 if (BotUserPostMessage::query()
                         ->where('post_message_id', $this->post_id)
+                        ->whereRelation('botUser', 'status', '=', ChatMemberStatus::Member)
                         ->where('is_sent', false)
                         ->count() === 0
                 ) {
@@ -86,11 +86,13 @@ class SendPostToBotUsersJob implements ShouldQueue
                     Request::sendMessage($post->creator->chat_id, __('Xabar yuborildi'));
 
                     $post->update(['is_sent' => true]);
+                }
 
-                    if ($key % 10 === 0 && $key !== 0 || $start_time->diffInSeconds(now()) >= 60) {
-                        $start_time = now();
-                        sleep(2);
-                    }
+
+                if ($key % 10 === 0 && $key !== 0 || $start_time->diffInSeconds(now()) >= 60) {
+                    $this->sendProgressToCreator($postMessage);
+                    $start_time = now();
+                    sleep(2);
                 }
             });
     }
@@ -107,7 +109,7 @@ class SendPostToBotUsersJob implements ShouldQueue
             ->where('is_sent', true)
             ->count();
 
-        $percent = (int)round($sent_count / $all_count * 100);
+        $percent = (int)floor($sent_count / $all_count * 100);
 
         try {
             Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, "$sent_count/$all_count\n\n$percent%");
