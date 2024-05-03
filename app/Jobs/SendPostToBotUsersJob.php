@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\Models\BotUserPostMessage;
-use App\Models\PostMessage;
 use App\Modules\Telegram\Enums\ChatMemberStatus;
 use App\Modules\Telegram\Exceptions\BadRequestException;
 use App\Modules\Telegram\Facades\Request;
@@ -18,10 +17,10 @@ class SendPostToBotUsersJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /**
-     * @var \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Model|null
-     */
-    protected PostMessage $post;
+    public int $tries = 5;
+    public int $backoff = 60;
+
+    public $delay = 60;
 
     /**
      * Create a new job instance.
