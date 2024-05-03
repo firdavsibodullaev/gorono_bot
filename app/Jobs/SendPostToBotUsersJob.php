@@ -121,7 +121,13 @@ class SendPostToBotUsersJob implements ShouldQueue
         $progress_text = "$sent_count/$all_count\n\n$percent%\n\n\nVaqti: $time";
 
         try {
-            Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, $progress_text);
+
+            Request::editMessageText(
+                chat_id: $message->postMessage->creator->chat_id,
+                message_id: $message->postMessage->progress_message_id,
+                text: $progress_text
+            );
+
         } catch (MessageCantBeEditedException) {
             $progressMessage = Request::sendMessage($message->postMessage->creator->chat_id, $progress_text);
             $message->postMessage->progress_message_id = $progressMessage->result->message_id;
