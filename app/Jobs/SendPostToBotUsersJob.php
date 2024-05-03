@@ -20,13 +20,12 @@ class SendPostToBotUsersJob implements ShouldQueue
     public int $tries = 5;
     public int $backoff = 60;
 
-    public $delay = 60;
-
     /**
      * Create a new job instance.
      */
     public function __construct(public int $post_id)
     {
+        $this->delay(60);
     }
 
     /**
