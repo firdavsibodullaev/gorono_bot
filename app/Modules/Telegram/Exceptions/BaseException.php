@@ -31,7 +31,7 @@ class BaseException extends Exception
                 "Bad Request: message text is empty" => static::messageTextIsEmpty($result),
                 "[Error]: Bad Request: user not found" => static::userNotFound($result),
                 "Bad Request: wrong parameter action in request" => static::wrongParameterAction($result),
-                "Bad Request: message can't be edited"=> static::messageCantBeEdited($result),
+                "Bad Request: message can't be edited" => static::messageCantBeEdited($result),
                 default => new BadRequestException($result['description'], $result['error_code'])
             };
         }
