@@ -114,6 +114,16 @@ class SendPostToBotUsersJob implements ShouldQueue
         try {
             Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, "$sent_count/$all_count\n\n$percent%");
         } catch (BadRequestException $e) {
+
+            if ($e->getMessage() === "Bad Request: message can't be edited") {
+                $progressMessage = Request::sendMessage($message->postMessage->creator->chat_id, "$sent_count/$all_count\n\n$percent%");
+
+                $message->postMessage->progress_message_id = $progressMessage->result->message_id;
+                $message->postMessage->save();
+
+                return;
+            }
+
             report($e);
             if ($e->getCode() === 429) {
                 $sleepTime = (int)str($e->getMessage())->remove("Too Many Requests: retry after ")->toString();
