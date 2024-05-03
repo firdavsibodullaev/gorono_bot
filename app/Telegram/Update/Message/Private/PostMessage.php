@@ -108,12 +108,13 @@ class PostMessage extends BaseAction
 
             $post->update(['is_ready_for_post' => true]);
 
-            SendPostToBotUsersJob::dispatch($post->id);
             $progress = $this->message->sendMessage("0%", reply_markup: Keyboard::remove());
 
             $post->update(['progress_message_id' => $progress->result->message_id]);
 
             $post->botUsers()->sync(BotUser::member()->pluck('id'));
+
+            SendPostToBotUsersJob::dispatch($post->id);
         }
     }
 
