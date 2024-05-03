@@ -17,7 +17,7 @@ class SendPostToBotUsersJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 5;
+    public int $tries = 10;
     public int $backoff = 60;
 
     /**
@@ -60,6 +60,8 @@ class SendPostToBotUsersJob implements ShouldQueue
                     } else {
                         return;
                     }
+
+                    $botUser->update(['status' => ChatMemberStatus::Member]);
                 } catch (BadRequestException $e) {
                     report($e);
                     if (in_array($e->getMessage(), ['Forbidden: user is deactivated', 'Forbidden: bot was blocked by the user'])) {
