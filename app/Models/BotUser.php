@@ -61,6 +61,11 @@ class BotUser extends Model
         return static::query()->where('status', ChatMemberStatus::Member);
     }
 
+    public static function registered(): Builder
+    {
+        return static::query()->where('is_registered', true);
+    }
+
     protected function casts(): array
     {
         return [

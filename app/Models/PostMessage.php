@@ -46,7 +46,7 @@ class PostMessage extends Model
     public function botUsers(): BelongsToMany
     {
         return $this->belongsToMany(BotUser::class, 'bot_user_post_message')
-            ->withPivot(['is_sent', 'sent_at', 'message_id'])
+            ->withPivot(['status', 'sent_at', 'message_id'])
             ->where('status', ChatMemberStatus::Member)
             ->where('is_registered', true)
             ->using(BotUserPostMessage::class);

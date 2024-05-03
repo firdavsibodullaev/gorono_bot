@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('bot_user_id');
             $table->foreignId('post_message_id');
-            $table->boolean('is_sent')->default(false);
+            $table->string('status')->default('process');
             $table->dateTime('sent_at')->nullable();
             $table->unsignedBigInteger('message_id')->nullable();
 

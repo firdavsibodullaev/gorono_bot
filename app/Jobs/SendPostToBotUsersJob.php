@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Enums\BotUserPostMessageStatus;
+use App\Models\BotUser;
 use App\Models\BotUserPostMessage;
 use App\Modules\Telegram\Enums\ChatMemberStatus;
 use App\Modules\Telegram\Exceptions\BadRequestException;
@@ -36,7 +38,7 @@ class SendPostToBotUsersJob implements ShouldQueue
         $start_time = now();
         BotUserPostMessage::query()
             ->where('post_message_id', $this->post_id)
-            ->where('is_sent', false)
+            ->where('status', BotUserPostMessageStatus::Process)
             ->whereHas('botUser')
             ->with(['botUser', 'postMessage.creator'])
             ->lazy(100)
@@ -61,9 +63,11 @@ class SendPostToBotUsersJob implements ShouldQueue
                         return;
                     }
 
-                    $botUser->update(['status' => ChatMemberStatus::Member]);
+                    $this->checkBotUserStatus($botUser);
                 } catch (BadRequestException $e) {
+                    $postMessage->update(['status' => BotUserPostMessageStatus::Fail]);
                     report($e);
+
                     if (in_array($e->getMessage(), ['Forbidden: user is deactivated', 'Forbidden: bot was blocked by the user'])) {
                         $botUser->update(['status' => ChatMemberStatus::Kicked]);
                     } elseif ($e->getCode() === 429) {
@@ -75,13 +79,12 @@ class SendPostToBotUsersJob implements ShouldQueue
                     return;
                 }
 
-                $postMessage->update(['is_sent' => true, 'sent_at' => now(), 'message_id' => $message->result->message_id]);
+                $postMessage->update(['status' => BotUserPostMessageStatus::Success, 'sent_at' => now(), 'message_id' => $message->result->message_id]);
 
 
                 if (BotUserPostMessage::query()
                         ->where('post_message_id', $this->post_id)
-                        ->whereRelation('botUser', 'status', '=', ChatMemberStatus::Member)
-                        ->where('is_sent', false)
+                        ->where('status', BotUserPostMessageStatus::Process)
                         ->count() === 0
                 ) {
 
@@ -108,7 +111,7 @@ class SendPostToBotUsersJob implements ShouldQueue
 
         $sent_count = BotUserPostMessage::query()
             ->where('post_message_id', $this->post_id)
-            ->where('is_sent', true)
+            ->where('status', '!=', BotUserPostMessageStatus::Process)
             ->count();
 
         $percent = (int)floor($sent_count / $all_count * 100);
@@ -135,5 +138,14 @@ class SendPostToBotUsersJob implements ShouldQueue
             }
             sleep(2);
         }
+    }
+
+    private function checkBotUserStatus(BotUser $botUser): void
+    {
+        if ($botUser->status->is(ChatMemberStatus::Member)) {
+            return;
+        }
+
+        $botUser->update(['status' => ChatMemberStatus::Member]);
     }
 }

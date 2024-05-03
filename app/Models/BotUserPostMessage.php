@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Modules\Telegram\Enums\ChatMemberStatus;
+use App\Enums\BotUserPostMessageStatus;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 /**
  * @property int $bot_user_id
  * @property int $post_message_id
- * @property bool $is_sent
+ * @property BotUserPostMessageStatus $status
  * @property Carbon|null $sent_at
  * @property Carbon|null $message_id
  * @property-read BotUser $botUser
@@ -18,15 +18,16 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class BotUserPostMessage extends Pivot
 {
-    protected $casts = ['is_sent' => 'boolean', 'sent_at' => 'datetime'];
+    protected $casts = [
+        'status' => BotUserPostMessageStatus::class,
+        'sent_at' => 'datetime'
+    ];
 
     public $timestamps = false;
 
     public function botUser(): BelongsTo
     {
-        return $this->belongsTo(BotUser::class)
-            ->where('status', ChatMemberStatus::Member)
-            ->where('is_registered', true);
+        return $this->belongsTo(BotUser::class)->where('is_registered', true);
     }
 
     public function postMessage(): BelongsTo

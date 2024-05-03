@@ -112,7 +112,7 @@ class PostMessage extends BaseAction
 
             $post->update(['progress_message_id' => $progress->result->message_id]);
 
-            $post->botUsers()->sync(BotUser::member()->pluck('id'));
+            $post->botUsers()->sync(BotUser::registered()->pluck('id'));
 
             SendPostToBotUsersJob::dispatch($post->id);
         }
