@@ -6,7 +6,8 @@ use App\Modules\Telegram\DTOs\Request\BaseDTO;
 use App\Modules\Telegram\DTOs\Request\BaseFileDTO;
 use App\Modules\Telegram\Enums\Method;
 use App\Modules\Telegram\Exceptions\BadRequestException;
-use App\Modules\Telegram\Exceptions\TelegramTokenNotExist;
+use App\Modules\Telegram\Exceptions\BaseException;
+use App\Modules\Telegram\Exceptions\TelegramTokenNotExistException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\UploadedFile;
@@ -20,14 +21,14 @@ class Api
     protected string $base_url = "https://api.telegram.org/bot{token}";
 
     /**
-     * @throws TelegramTokenNotExist
+     * @throws TelegramTokenNotExistException
      */
     public function __construct()
     {
         $config = config('services.telegram');
 
         if (!$config['token']) {
-            throw new TelegramTokenNotExist("Telegram bot token does not exist");
+            throw new TelegramTokenNotExistException("Telegram bot token does not exist");
         }
 
         $this->token = $config['token'];
@@ -72,6 +73,7 @@ class Api
     /**
      * @throws ConnectionException
      * @throws BadRequestException
+     * @throws BaseException
      */
     public function sendFile(Method $method, BaseFileDTO $dto): array
     {
@@ -100,7 +102,7 @@ class Api
         $response = $request->json();
 
         if ($response['ok'] === false) {
-            throw new BadRequestException($response['description'], $response['error_code']);
+            throw BaseException::throw($response);
         }
 
         return $response;

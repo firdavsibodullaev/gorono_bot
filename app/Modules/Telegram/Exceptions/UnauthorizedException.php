@@ -2,7 +2,7 @@
 
 namespace App\Modules\Telegram\Exceptions;
 
-class BadRequestException extends BaseException
+class UnauthorizedException extends BaseException
 {
     //
 }
