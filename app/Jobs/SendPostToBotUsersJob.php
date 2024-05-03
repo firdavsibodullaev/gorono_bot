@@ -6,7 +6,11 @@ use App\Enums\BotUserPostMessageStatus;
 use App\Models\BotUser;
 use App\Models\BotUserPostMessage;
 use App\Modules\Telegram\Enums\ChatMemberStatus;
+use App\Modules\Telegram\Exceptions\BadRequest\MessageCantBeEditedException;
 use App\Modules\Telegram\Exceptions\BadRequestException;
+use App\Modules\Telegram\Exceptions\BaseException;
+use App\Modules\Telegram\Exceptions\ForbiddenException;
+use App\Modules\Telegram\Exceptions\TooManyTimesException;
 use App\Modules\Telegram\Facades\Request;
 use App\Telegram\Keyboard;
 use Illuminate\Bus\Queueable;
@@ -64,23 +68,22 @@ class SendPostToBotUsersJob implements ShouldQueue
                     }
 
                     $this->checkBotUserStatus($botUser);
-                } catch (BadRequestException $e) {
-                    $postMessage->update(['status' => BotUserPostMessageStatus::Fail]);
-                    report($e);
 
-                    if (in_array($e->getMessage(), ['Forbidden: user is deactivated', 'Forbidden: bot was blocked by the user'])) {
-                        $botUser->update(['status' => ChatMemberStatus::Kicked]);
-                    } elseif ($e->getCode() === 429) {
-                        $sleepTime = (int)str($e->getMessage())->remove("Too Many Requests: retry after ")->toString();
-                        sleep($sleepTime);
-                        goto loop;
-                    }
-                    sleep(2);
+                } catch (TooManyTimesException $e) {
+                    $this->handleTooManyTimes($e);
+                    goto loop;
+                } catch (BadRequestException $e) {
+                    $this->handleBadRequest($e, $postMessage);
+                    return;
+                } catch (ForbiddenException $e) {
+                    $this->handleForbidden($e, $postMessage, $botUser);
+                    return;
+                } catch (BaseException $e) {
+                    report($e);
                     return;
                 }
 
                 $postMessage->update(['status' => BotUserPostMessageStatus::Success, 'sent_at' => now(), 'message_id' => $message->result->message_id]);
-
 
                 if (BotUserPostMessage::query()
                         ->where('post_message_id', $this->post_id)
@@ -120,22 +123,15 @@ class SendPostToBotUsersJob implements ShouldQueue
 
         try {
             Request::editMessageText($message->postMessage->creator->chat_id, $message->postMessage->progress_message_id, $progress_text);
-        } catch (BadRequestException $e) {
-
-            if ($e->getMessage() === "Bad Request: message can't be edited") {
-                $progressMessage = Request::sendMessage($message->postMessage->creator->chat_id, "$sent_count/$all_count\n\n$percent%");
-
-                $message->postMessage->progress_message_id = $progressMessage->result->message_id;
-                $message->postMessage->save();
-
-                return;
-            }
-
+        } catch (MessageCantBeEditedException) {
+            $progressMessage = Request::sendMessage($message->postMessage->creator->chat_id, $progress_text);
+            $message->postMessage->progress_message_id = $progressMessage->result->message_id;
+            $message->postMessage->save();
+        } catch (TooManyTimesException $e) {
             report($e);
-            if ($e->getCode() === 429) {
-                $sleepTime = (int)str($e->getMessage())->remove("Too Many Requests: retry after ")->toString();
-                sleep($sleepTime);
-            }
+            sleep($e->getRetryAfter());
+        } catch (BaseException $e) {
+            report($e);
             sleep(2);
         }
     }
@@ -147,5 +143,26 @@ class SendPostToBotUsersJob implements ShouldQueue
         }
 
         $botUser->update(['status' => ChatMemberStatus::Member]);
+    }
+
+    private function handleBadRequest(BadRequestException $e, BotUserPostMessage $postMessage): void
+    {
+        report($e);
+        $postMessage->update(['status' => BotUserPostMessageStatus::Fail]);
+        sleep(2);
+    }
+
+    private function handleForbidden(ForbiddenException $e, BotUserPostMessage $postMessage, BotUser $botUser): void
+    {
+        report($e);
+        $postMessage->update(['status' => BotUserPostMessageStatus::Fail]);
+        $botUser->update(['status' => ChatMemberStatus::Kicked]);
+
+    }
+
+    private function handleTooManyTimes(TooManyTimesException $e): void
+    {
+        report($e);
+        sleep($e->getRetryAfter());
     }
 }

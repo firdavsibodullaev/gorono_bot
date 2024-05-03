@@ -5,6 +5,7 @@ namespace App\Modules\Telegram\Exceptions;
 use App\Modules\Telegram\Exceptions\BadRequest\ChatNotFoundException;
 use App\Modules\Telegram\Exceptions\BadRequest\GroupChatMigratedException;
 use App\Modules\Telegram\Exceptions\BadRequest\InvalidFileIdException;
+use App\Modules\Telegram\Exceptions\BadRequest\MessageCantBeEditedException;
 use App\Modules\Telegram\Exceptions\BadRequest\MessageIsEmptyException;
 use App\Modules\Telegram\Exceptions\BadRequest\MessageIsNotModifiedException;
 use App\Modules\Telegram\Exceptions\BadRequest\UserNotFoundException;
@@ -30,6 +31,7 @@ class BaseException extends Exception
                 "Bad Request: message text is empty" => static::messageTextIsEmpty($result),
                 "[Error]: Bad Request: user not found" => static::userNotFound($result),
                 "Bad Request: wrong parameter action in request" => static::wrongParameterAction($result),
+                "Bad Request: message can't be edited"=> static::messageCantBeEdited($result),
                 default => new BadRequestException($result['description'], $result['error_code'])
             };
         }
@@ -134,5 +136,10 @@ class BaseException extends Exception
     private static function webhookIsActive(array $result): WebhookIsActiveException
     {
         return new WebhookIsActiveException($result['description'], $result['error_code']);
+    }
+
+    private static function messageCantBeEdited(array $result): MessageCantBeEditedException
+    {
+        return new MessageCantBeEditedException($result['description'], $result['error_code']);
     }
 }
