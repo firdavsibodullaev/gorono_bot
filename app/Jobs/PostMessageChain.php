@@ -35,7 +35,7 @@ class PostMessageChain implements ShouldQueue
             ->whereHas('botUser')
             ->get(['id']);
 
-        $chain = [];
+        $chain = collect();
 
         $start_id = null;
 
@@ -46,9 +46,15 @@ class PostMessageChain implements ShouldQueue
 
             if ($key % 100 === 0 && $key !== 0 || $bot_user_post_messages->count() - 1 === $key) {
                 $end_id = $bot_user_post_message->id;
-                $chain[] = new SendPostToBotUsersJob($this->post_message_id, $start_id, $end_id);
+
+                $chain->push(new SendPostToBotUsersJob($this->post_message_id, $start_id, $end_id));
+
                 $start_id = null;
             }
+        }
+
+        if (empty($chain)) {
+            return;
         }
 
         Bus::chain($chain)->dispatch();

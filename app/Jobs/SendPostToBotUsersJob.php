@@ -12,7 +12,6 @@ use App\Modules\Telegram\Exceptions\BaseException;
 use App\Modules\Telegram\Exceptions\ForbiddenException;
 use App\Modules\Telegram\Exceptions\TooManyTimesException;
 use App\Modules\Telegram\Facades\Request;
-use App\Telegram\Keyboard;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -23,7 +22,7 @@ class SendPostToBotUsersJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public int $tries = 20;
+    public int $tries = 3;
 
     /**
      * Create a new job instance.
@@ -38,8 +37,6 @@ class SendPostToBotUsersJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $start_time = now();
-
         BotUserPostMessage::query()
             ->orderBy('id')
             ->where('post_message_id', $this->post_id)
@@ -56,7 +53,7 @@ class SendPostToBotUsersJob implements ShouldQueue
 
                 try {
                     if (is_null($post->file_ids)) {
-                        $message = Request::sendMessage($botUser->chat_id, $post->text, reply_markup: Keyboard::postMessageApprove());
+                        $message = Request::sendMessage($botUser->chat_id, $post->text);
                     } elseif ($post->file_ids['type'] == 'photo') {
                         $message = Request::sendPhoto(
                             $botUser->chat_id,
@@ -64,7 +61,6 @@ class SendPostToBotUsersJob implements ShouldQueue
                             $post->text,
                             null,
                             $post->entities,
-                            reply_markup: Keyboard::postMessageApprove()
                         );
                     } else {
                         return;
@@ -88,6 +84,12 @@ class SendPostToBotUsersJob implements ShouldQueue
 
                 $postMessage->update(['status' => BotUserPostMessageStatus::Success, 'sent_at' => now(), 'message_id' => $message->result->message_id]);
 
+                $this->sendProgressToCreator($postMessage);
+
+                if ($key % 30 === 0 && $key !== 0) {
+                    sleep(0.3);
+                }
+
                 if (BotUserPostMessage::query()
                         ->where('post_message_id', $this->post_id)
                         ->where('status', BotUserPostMessageStatus::Process)
@@ -97,13 +99,6 @@ class SendPostToBotUsersJob implements ShouldQueue
                     Request::sendMessage($post->creator->chat_id, __('Xabar yuborildi'));
 
                     $post->update(['is_sent' => true]);
-                }
-
-
-                if ($key % 10 === 0 && $key !== 0 || $start_time->diffInSeconds(now()) >= 60) {
-                    $this->sendProgressToCreator($postMessage);
-                    $start_time = now();
-                    sleep(2);
                 }
             });
     }
@@ -141,7 +136,7 @@ class SendPostToBotUsersJob implements ShouldQueue
             sleep($e->getRetryAfter());
         } catch (BaseException $e) {
             report($e);
-            sleep(2);
+            sleep(0.3);
         }
     }
 
@@ -158,7 +153,7 @@ class SendPostToBotUsersJob implements ShouldQueue
     {
         report($e);
         $postMessage->update(['status' => BotUserPostMessageStatus::Fail]);
-        sleep(2);
+        sleep(0.3);
     }
 
     private function handleForbidden(ForbiddenException $e, BotUserPostMessage $postMessage, BotUser $botUser): void

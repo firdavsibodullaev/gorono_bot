@@ -14,6 +14,7 @@ use App\Telegram\Action\Action;
 use App\Telegram\BackAction;
 use App\Telegram\BaseAction;
 use App\Telegram\Keyboard;
+use Illuminate\Support\Facades\DB;
 
 class PostMessage extends BaseAction
 {
@@ -106,15 +107,18 @@ class PostMessage extends BaseAction
                 ->where('bot_user_id', $this->user->id)
                 ->first();
 
-            $post->update(['is_ready_for_post' => true]);
+            DB::transaction(function () use ($post) {
+                $post->update(['is_ready_for_post' => true]);
 
-            $progress = $this->message->sendMessage("0%", reply_markup: Keyboard::remove());
+                $progress = $this->message->sendMessage("0%", reply_markup: Keyboard::remove());
 
-            $post->update(['progress_message_id' => $progress->result->message_id]);
+                $post->update(['progress_message_id' => $progress->result->message_id]);
 
-            $post->botUsers()->sync(BotUser::registered()->pluck('id'));
+                $post->botUsers()->sync(BotUser::registered()->pluck('id'));
 
-            PostMessageChain::dispatch($post->id);
+                PostMessageChain::dispatch($post->id);
+            });
+
         }
     }
 

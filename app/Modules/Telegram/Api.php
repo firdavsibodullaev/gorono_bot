@@ -18,6 +18,7 @@ class Api
 {
     protected string $token;
 
+    protected string $base_url_pattern = "https://api.telegram.org/bot{token}";
     protected string $base_url = "https://api.telegram.org/bot{token}";
 
     /**
@@ -42,7 +43,7 @@ class Api
 
     private function makeBaseUrl(): void
     {
-        $this->base_url = str($this->base_url)->replace('{token}', $this->token);
+        $this->base_url = str($this->base_url_pattern)->replace('{token}', $this->token);
     }
 
     /**

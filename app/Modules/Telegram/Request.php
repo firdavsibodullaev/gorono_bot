@@ -18,6 +18,7 @@ use App\Modules\Telegram\DTOs\Response\WebhookDTO;
 use App\Modules\Telegram\Enums\ChatAction;
 use App\Modules\Telegram\Enums\Method;
 use App\Modules\Telegram\Exceptions\BadRequestException;
+use App\Modules\Telegram\Exceptions\BaseException;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request as FacadeRequest;
 use Illuminate\Http\UploadedFile;
@@ -29,7 +30,13 @@ class Request
     }
 
     /**
+     * @param int|null $offset
+     * @param int|null $limit
+     * @param int|null $timeout
+     * @param array|null $allowed_updates
+     * @return GetUpdatesResponseDTO
      * @throws ConnectionException
+     * @throws BaseException
      */
     public function getUpdates(
         ?int   $offset = null,
@@ -51,6 +58,15 @@ class Request
     }
 
     /**
+     * @param string $url
+     * @param UploadedFile|null $certificate
+     * @param string|null $ip_address
+     * @param int $max_connections
+     * @param array|null $allowed_updates
+     * @param bool $drop_pending_updates
+     * @param string|null $secret_token
+     * @return WebhookDTO|ErrorResponseDTO
+     * @throws BaseException
      * @throws ConnectionException
      */
     public function setWebhook(
@@ -72,6 +88,16 @@ class Request
             : ERrorResponseDTO::fromArray($response);
     }
 
+    /**
+     * @param int $chat_id
+     * @param string $text
+     * @param string $parse_mode
+     * @param string|null $reply_markup
+     * @param array $reply_parameters
+     * @return SendMessageResponseDTO
+     * @throws BaseException
+     * @throws ConnectionException
+     */
     public function sendMessage(
         int     $chat_id,
         string  $text,
@@ -94,6 +120,16 @@ class Request
     }
 
     /**
+     * @param int $chat_id
+     * @param UploadedFile|string $photo
+     * @param string|null $caption
+     * @param string|null $parse_mode
+     * @param array|null $caption_entities
+     * @param string|null $reply_markup
+     * @param array $reply_parameters
+     * @return SendMessageResponseDTO
+     * @throws BadRequestException
+     * @throws BaseException
      * @throws ConnectionException
      */
     public function sendPhoto(
@@ -121,6 +157,19 @@ class Request
         return SendMessageResponseDTO::fromArray($response);
     }
 
+    /**
+     * @param int $chat_id
+     * @param UploadedFile|string $document
+     * @param UploadedFile|string|null $thumbnail
+     * @param string|null $caption
+     * @param string $parse_mode
+     * @param string|null $reply_markup
+     * @param array $reply_parameters
+     * @return SendMessageResponseDTO
+     * @throws BadRequestException
+     * @throws BaseException
+     * @throws ConnectionException
+     */
     public function sendDocument(
         int                      $chat_id,
         UploadedFile|string      $document,
@@ -146,6 +195,13 @@ class Request
         return SendMessageResponseDTO::fromArray($response);
     }
 
+    /**
+     * @param int $chat_id
+     * @param ChatAction $action
+     * @return SuccessEmptyDTO
+     * @throws BaseException
+     * @throws ConnectionException
+     */
     public function sendChatAction(int $chat_id, ChatAction $action): SuccessEmptyDTO
     {
         $payload = new ChatActionDTO($chat_id, $action);
@@ -156,8 +212,14 @@ class Request
     }
 
     /**
+     * @param int $chat_id
+     * @param int $message_id
+     * @param string $text
+     * @param string $parse_mode
+     * @param string|null $reply_markup
+     * @return SendMessageResponseDTO|ErrorResponseDTO
+     * @throws BaseException
      * @throws ConnectionException
-     * @throws BadRequestException
      */
     public function editMessageText(
         int     $chat_id,
