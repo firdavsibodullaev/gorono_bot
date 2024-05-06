@@ -5,7 +5,7 @@ namespace App\Telegram\Update\Message\Private;
 use App\Actions\BotUser\BotUserByFromIdChatIdAction;
 use App\Enums\Method;
 use App\Exceptions\StopExecutionException;
-use App\Jobs\SendPostToBotUsersJob;
+use App\Jobs\PostMessageChain;
 use App\Models\BotUser;
 use App\Models\PostMessage as PostMessageModel;
 use App\Modules\Telegram\DTOs\Response\MessageDTO;
@@ -114,7 +114,7 @@ class PostMessage extends BaseAction
 
             $post->botUsers()->sync(BotUser::registered()->pluck('id'));
 
-            SendPostToBotUsersJob::dispatch($post->id);
+            PostMessageChain::dispatch($post->id);
         }
     }
 

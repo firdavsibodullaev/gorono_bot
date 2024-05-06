@@ -28,7 +28,7 @@ class SendPostToBotUsersJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public int $post_id)
+    public function __construct(public int $post_id, public int $start_id, public int $end_id)
     {
         //
     }
@@ -39,12 +39,16 @@ class SendPostToBotUsersJob implements ShouldQueue
     public function handle(): void
     {
         $start_time = now();
+
         BotUserPostMessage::query()
+            ->orderBy('id')
             ->where('post_message_id', $this->post_id)
             ->where('status', BotUserPostMessageStatus::Process)
             ->whereHas('botUser')
+            ->where('id', '>=', $this->start_id)
+            ->where('id', '<=', $this->end_id)
             ->with(['botUser', 'postMessage.creator'])
-            ->lazy(100)
+            ->lazy(50)
             ->each(function (BotUserPostMessage $postMessage, int $key) use (&$start_time) {
                 loop:
                 $post = $postMessage->postMessage;

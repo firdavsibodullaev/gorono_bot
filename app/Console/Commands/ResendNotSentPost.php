@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\PostMessageChain;
 use App\Jobs\SendPostToBotUsersJob;
 use App\Models\PostMessage;
 use Illuminate\Console\Command;
@@ -30,7 +31,7 @@ class ResendNotSentPost extends Command
         PostMessage::query()
             ->where('is_sent', false)
             ->each(function (PostMessage $postMessage) {
-                SendPostToBotUsersJob::dispatch($postMessage->id);
+                PostMessageChain::dispatch($postMessage->id);
             });
     }
 }

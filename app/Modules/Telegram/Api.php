@@ -47,7 +47,7 @@ class Api
 
     /**
      * @throws ConnectionException
-     * @throws BadRequestException
+     * @throws BaseException
      */
     public function send(Method $method, ?BaseDTO $dto = null): array
     {
@@ -64,7 +64,7 @@ class Api
         $response = $request->json();
 
         if ($response['ok'] === false) {
-            throw new BadRequestException($response['description'], $response['error_code']);
+            throw BaseException::throw($response);
         }
 
         return $response;

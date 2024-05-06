@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
+ * @property int $id
  * @property int $bot_user_id
  * @property int $post_message_id
  * @property BotUserPostMessageStatus $status
