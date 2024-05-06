@@ -50,7 +50,7 @@ class PostMessageChain implements ShouldQueue
                 $start_id = null;
             }
         }
-        dd();
+
         Bus::chain($chain)->dispatch();
     }
 }
