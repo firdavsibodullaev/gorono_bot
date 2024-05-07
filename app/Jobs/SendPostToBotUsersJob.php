@@ -86,7 +86,7 @@ class SendPostToBotUsersJob implements ShouldQueue
 
                 $this->sendProgressToCreator($postMessage);
 
-                if ($key % 30 === 0 && $key !== 0) {
+                if ($key % 29 === 0 && $key !== 0) {
                     $this->sleep();
                 }
 
