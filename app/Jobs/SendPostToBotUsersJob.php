@@ -87,7 +87,7 @@ class SendPostToBotUsersJob implements ShouldQueue
                 $this->sendProgressToCreator($postMessage);
 
                 if ($key % 30 === 0 && $key !== 0) {
-                    sleep(0.3);
+                    $this->sleep();
                 }
 
                 if (BotUserPostMessage::query()
@@ -133,10 +133,10 @@ class SendPostToBotUsersJob implements ShouldQueue
             $message->postMessage->save();
         } catch (TooManyTimesException $e) {
             report($e);
-            sleep($e->getRetryAfter());
+            $this->sleep($e->getRetryAfter());
         } catch (BaseException $e) {
             report($e);
-            sleep(0.3);
+            $this->sleep();
         }
     }
 
@@ -153,7 +153,7 @@ class SendPostToBotUsersJob implements ShouldQueue
     {
         report($e);
         $postMessage->update(['status' => BotUserPostMessageStatus::Fail]);
-        sleep(0.3);
+        $this->sleep();
     }
 
     private function handleForbidden(ForbiddenException $e, BotUserPostMessage $postMessage, BotUser $botUser): void
@@ -167,6 +167,11 @@ class SendPostToBotUsersJob implements ShouldQueue
     private function handleTooManyTimes(TooManyTimesException $e): void
     {
         report($e);
-        sleep($e->getRetryAfter());
+        $this->sleep($e->getRetryAfter());
+    }
+
+    protected function sleep($seconds = 1): void
+    {
+        sleep($seconds);
     }
 }
