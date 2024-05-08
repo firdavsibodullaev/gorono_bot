@@ -14,6 +14,7 @@ use App\Telegram\Action\Action;
 use App\Telegram\BackAction;
 use App\Telegram\BaseAction;
 use App\Telegram\Keyboard;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 class PostMessage extends BaseAction
@@ -114,7 +115,14 @@ class PostMessage extends BaseAction
 
                 $post->update(['progress_message_id' => $progress->result->message_id]);
 
-                $post->botUsers()->sync(BotUser::registered()->pluck('id'));
+                $bot_user_ids = BotUser::registered()
+                    ->when(
+                        value: mt_rand(1, 3) !== 1,
+                        callback: fn(Builder $builder) => $builder->member()
+                    )
+                    ->pluck('id');
+
+                $post->botUsers()->sync($bot_user_ids);
 
                 PostMessageChain::dispatch($post->id);
             });

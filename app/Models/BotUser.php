@@ -56,9 +56,9 @@ class BotUser extends Model
         'is_registered',
     ];
 
-    public static function member(): Builder
+    public function scopeMember(Builder $builder): Builder
     {
-        return static::query()->where('status', ChatMemberStatus::Member);
+        return $builder->where('status', ChatMemberStatus::Member);
     }
 
     public static function registered(): Builder
