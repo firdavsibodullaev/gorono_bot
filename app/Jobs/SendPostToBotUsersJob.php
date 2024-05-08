@@ -84,9 +84,8 @@ class SendPostToBotUsersJob implements ShouldQueue
 
                 $postMessage->update(['status' => BotUserPostMessageStatus::Success, 'sent_at' => now(), 'message_id' => $message->result->message_id]);
 
-                $this->sendProgressToCreator($postMessage);
-
                 if ($key % 19 === 0 && $key !== 0) {
+                    $this->sendProgressToCreator($postMessage);
                     $this->sleep();
                 }
 
