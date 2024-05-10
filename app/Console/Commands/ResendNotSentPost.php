@@ -28,11 +28,11 @@ class ResendNotSentPost extends Command
      */
     public function handle(): void
     {
-        Artisan::call('queue:clear --queue=telegram-post');
+        Artisan::call('queue:clear');
         PostMessage::query()
             ->where('is_sent', false)
             ->each(function (PostMessage $postMessage) {
-                PostMessageChain::dispatch($postMessage->id)->onQueue('telegram-post');
+                PostMessageChain::dispatch($postMessage->id);
             });
     }
 }

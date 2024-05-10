@@ -124,7 +124,7 @@ class PostMessage extends BaseAction
 
                 $post->botUsers()->sync($bot_user_ids);
 
-                PostMessageChain::dispatch($post->id)->onQueue('telegram-post');;
+                PostMessageChain::dispatch($post->id);
             });
 
         }
