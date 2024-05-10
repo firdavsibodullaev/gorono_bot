@@ -32,7 +32,7 @@ class ResendNotSentPost extends Command
         PostMessage::query()
             ->where('is_sent', false)
             ->each(function (PostMessage $postMessage) {
-                PostMessageChain::dispatch($postMessage->id);
+                PostMessageChain::dispatch($postMessage->id)->onQueue('telegram-post');
             });
     }
 }
