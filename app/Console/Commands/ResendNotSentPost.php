@@ -3,9 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Jobs\PostMessageChain;
-use App\Jobs\SendPostToBotUsersJob;
 use App\Models\PostMessage;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
 class ResendNotSentPost extends Command
 {
@@ -26,8 +26,9 @@ class ResendNotSentPost extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
+        Artisan::call('queue:clear');
         PostMessage::query()
             ->where('is_sent', false)
             ->each(function (PostMessage $postMessage) {
