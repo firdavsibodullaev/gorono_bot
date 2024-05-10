@@ -29,7 +29,7 @@ class SendPostToBotUsersJob implements ShouldQueue
      */
     public function __construct(public int $post_id, public int $start_id, public int $end_id)
     {
-        //
+        $this->onQueue('telegram-post');
     }
 
     /**

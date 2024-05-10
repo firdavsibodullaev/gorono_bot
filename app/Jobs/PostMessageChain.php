@@ -57,6 +57,6 @@ class PostMessageChain implements ShouldQueue
             return;
         }
 
-        Bus::chain($chain)->dispatch();
+        Bus::chain($chain)->onQueue('telegram-post')->dispatch();
     }
 }
