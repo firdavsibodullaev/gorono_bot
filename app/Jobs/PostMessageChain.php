@@ -20,7 +20,7 @@ class PostMessageChain implements ShouldQueue
      */
     public function __construct(protected int $post_message_id)
     {
-        //
+        $this->onQueue('telegram-post');
     }
 
     /**
@@ -57,6 +57,6 @@ class PostMessageChain implements ShouldQueue
             return;
         }
 
-        Bus::chain($chain)->dispatch();
+        Bus::chain($chain)->onQueue('telegram-post')->dispatch();
     }
 }
