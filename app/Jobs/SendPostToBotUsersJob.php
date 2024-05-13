@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\BotUserPostMessageStatus;
 use App\Models\BotUser;
 use App\Models\BotUserPostMessage;
+use App\Models\PostMessage;
 use App\Modules\Telegram\Enums\ChatMemberStatus;
 use App\Modules\Telegram\Exceptions\BadRequest\MessageCantBeEditedException;
 use App\Modules\Telegram\Exceptions\BadRequestException;
@@ -37,7 +38,7 @@ class SendPostToBotUsersJob implements ShouldQueue
      */
     public function handle(): void
     {
-        BotUserPostMessage::query()
+        $messages = BotUserPostMessage::query()
             ->orderBy('id')
             ->where('post_message_id', $this->post_id)
             ->where('status', BotUserPostMessageStatus::Process)
@@ -45,61 +46,70 @@ class SendPostToBotUsersJob implements ShouldQueue
             ->where('id', '>=', $this->start_id)
             ->where('id', '<=', $this->end_id)
             ->with(['botUser', 'postMessage.creator'])
-            ->lazy(50)
-            ->each(function (BotUserPostMessage $postMessage, int $key) use (&$start_time) {
-                loop:
-                $post = $postMessage->postMessage;
-                $botUser = $postMessage->botUser;
+            ->lazy(50);
 
-                try {
-                    if (is_null($post->file_ids)) {
-                        $message = Request::sendMessage($botUser->chat_id, $post->text);
-                    } elseif ($post->file_ids['type'] == 'photo') {
-                        $message = Request::sendPhoto(
-                            $botUser->chat_id,
-                            $post->file_ids['file_id'],
-                            $post->text,
-                            null,
-                            $post->entities,
-                        );
-                    } else {
-                        return;
-                    }
+        if ($messages->isEmpty()) {
+            /** @var PostMessage $post */
+            $post = PostMessage::query()->with('creator')->find($this->post_id);
+            Request::sendMessage($post->creator->chat_id, __('Xabar yuborildi'));
+            $post->update(['is_sent' => true]);
+            return;
+        }
 
-                    $this->checkBotUserStatus($botUser);
+        $messages->each(function (BotUserPostMessage $postMessage, int $key) use (&$start_time) {
+            loop:
+            $post = $postMessage->postMessage;
+            $botUser = $postMessage->botUser;
 
-                } catch (TooManyTimesException $e) {
-                    $this->handleTooManyTimes($e);
-                    goto loop;
-                } catch (BadRequestException $e) {
-                    $this->handleBadRequest($e, $postMessage);
-                    return;
-                } catch (ForbiddenException $e) {
-                    $this->handleForbidden($e, $postMessage, $botUser);
-                    return;
-                } catch (BaseException $e) {
-                    report($e);
+            try {
+                if (is_null($post->file_ids)) {
+                    $message = Request::sendMessage($botUser->chat_id, $post->text);
+                } elseif ($post->file_ids['type'] == 'photo') {
+                    $message = Request::sendPhoto(
+                        $botUser->chat_id,
+                        $post->file_ids['file_id'],
+                        $post->text,
+                        null,
+                        $post->entities,
+                    );
+                } else {
                     return;
                 }
 
-                $postMessage->update(['status' => BotUserPostMessageStatus::Success, 'sent_at' => now(), 'message_id' => $message->result->message_id]);
+                $this->checkBotUserStatus($botUser);
 
-                if ($key % 19 === 0 && $key !== 0) {
-                    $this->sendProgressToCreator($postMessage);
-                    $this->sleep();
-                }
+            } catch (TooManyTimesException $e) {
+                $this->handleTooManyTimes($e);
+                goto loop;
+            } catch (BadRequestException $e) {
+                $this->handleBadRequest($e, $postMessage);
+                return;
+            } catch (ForbiddenException $e) {
+                $this->handleForbidden($e, $postMessage, $botUser);
+                return;
+            } catch (BaseException $e) {
+                report($e);
+                return;
+            }
 
-                if (BotUserPostMessage::query()
-                        ->where('post_message_id', $this->post_id)
-                        ->where('status', BotUserPostMessageStatus::Process)
-                        ->count() === 0
-                ) {
+            $postMessage->update(['status' => BotUserPostMessageStatus::Success, 'sent_at' => now(), 'message_id' => $message->result->message_id]);
 
-                    Request::sendMessage($post->creator->chat_id, __('Xabar yuborildi'));
+            if ($key % 19 === 0 && $key !== 0) {
+                $this->sendProgressToCreator($postMessage);
+                $this->sleep();
+            }
 
-                    $post->update(['is_sent' => true]);
-                }
-            });
+            if (BotUserPostMessage::query()
+                    ->where('post_message_id', $this->post_id)
+                    ->where('status', BotUserPostMessageStatus::Process)
+                    ->count() === 0
+            ) {
+
+                Request::sendMessage($post->creator->chat_id, __('Xabar yuborildi'));
+
+                $post->update(['is_sent' => true]);
+            }
+        });
     }
 
     private function sendProgressToCreator(BotUserPostMessage $message): void
